@@ -25,28 +25,26 @@ const blog = defineCollection({
     }),
 });
 
-const projects = defineCollection({
-  loader: glob({ pattern: '**/*.md', base: './src/content/projects' }),
+/**
+ * Works = the video covers shown on the home page. Each item is a cover image
+ * that links out to an EXTERNAL video (Vimeo / YouTube / client page). There is
+ * no internal detail page by design — the cover is the link.
+ */
+const works = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/works' }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
       cover: image(),
-      year: z.number().int(),
-      role: z.string(),
-      // External / video links (e.g. Vimeo, YouTube, client site).
-      links: z
-        .array(
-          z.object({
-            label: z.string(),
-            url: z.string().url(),
-          }),
-        )
-        .default([]),
-      description: z.string(),
-      // Manual ordering in the portfolio grid (lower = first).
+      // External destination (the cover links here).
+      video: z.string().url(),
+      // Optional context shown under the title.
+      role: z.string().optional(),
+      year: z.number().int().optional(),
+      // Manual ordering in the grid (lower = first).
       order: z.number().int().default(0),
       draft: z.boolean().default(false),
     }),
 });
 
-export const collections = { blog, projects };
+export const collections = { blog, works };

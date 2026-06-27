@@ -1,52 +1,57 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProjectCard from '../components/ProjectCard.astro';
+import WorkCard from '../components/WorkCard.astro';
 import PostCard from '../components/PostCard.astro';
-import { SITE } from '../data/site.ts';
 
-const projects = (await getCollection('projects', ({ data }) => !data.draft))
-  .sort((a, b) => a.data.order - b.data.order)
-  .slice(0, 3);
+const works = (await getCollection('works', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 2);
+  .slice(0, 3);
 ---
 
 <BaseLayout>
+  <!-- Hero -->
   <section class="hero wrap">
-    <p class="eyebrow reveal">Portfolio &amp; Blog</p>
+    <p class="eyebrow reveal">Produzioni video</p>
     <h1 class="hero__title reveal">
-      Racconto progetti e idee,<br />una produzione alla volta.
+      Diamo forma alle idee,<br />un'inquadratura alla volta.
     </h1>
     <p class="hero__lead reveal">
-      {SITE.description}
+      {/* Testo provvisorio — sostituibile con il testo definitivo del cliente. */}
+      Centioni Produzioni racconta storie attraverso il video: dall'idea alla
+      regia, fino al montaggio finale.
     </p>
     <div class="hero__actions reveal">
-      <a href="/portfolio" class="btn">Vedi i progetti</a>
-      <a href="/blog" class="btn btn--ghost">Leggi il blog</a>
+      <a href="#lavori" class="btn">Guarda i lavori</a>
+      <a href="/chi-siamo" class="btn btn--ghost">Chi siamo</a>
     </div>
   </section>
 
-  {
-    projects.length > 0 && (
-      <section class="wrap section">
-        <header class="section__head">
-          <h2 class="reveal">Progetti in evidenza</h2>
-          <a href="/portfolio" class="link-arrow reveal">
-            Tutti i progetti <span aria-hidden="true">→</span>
-          </a>
-        </header>
-        <div class="grid">
-          {projects.map((p, i) => (
-            <ProjectCard project={p} eager={i === 0} />
+  <!-- Lavori: copertine linkabili a video esterni -->
+  <section id="lavori" class="wrap section section--works">
+    <header class="section__head">
+      <h2 class="reveal">Lavori</h2>
+      <p class="section__hint eyebrow reveal">Le copertine aprono il video</p>
+    </header>
+
+    {
+      works.length > 0 ? (
+        <div class="works-grid">
+          {works.map((w, i) => (
+            <WorkCard work={w} eager={i < 2} />
           ))}
         </div>
-      </section>
-    )
-  }
+      ) : (
+        <p>Presto online i primi lavori.</p>
+      )
+    }
+  </section>
 
+  <!-- Blog -->
   {
     posts.length > 0 && (
       <section class="wrap section">
@@ -68,13 +73,13 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
 
 <style>
   .hero {
-    padding-block: clamp(3rem, 8vw, 7rem) var(--space-5);
+    padding-block: clamp(3.5rem, 10vw, 8.5rem) var(--space-5);
   }
 
   .hero__title {
     font-size: var(--step-4);
     margin-top: var(--space-2);
-    max-width: 16ch;
+    max-width: 18ch;
   }
 
   .hero__lead {
@@ -95,6 +100,12 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
     padding-block: var(--space-4);
   }
 
+  .section--works {
+    scroll-margin-top: 5rem;
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-line);
+  }
+
   .section__head {
     display: flex;
     align-items: baseline;
@@ -107,10 +118,14 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
     font-size: var(--step-2);
   }
 
-  .grid {
+  .section__hint {
+    color: var(--color-muted);
+  }
+
+  .works-grid {
     display: grid;
-    gap: var(--space-4) var(--space-3);
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+    gap: var(--space-5) var(--space-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
   }
 
   .stack {

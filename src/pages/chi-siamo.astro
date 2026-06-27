@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/site.ts';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: 'Chi siamo',
+  url: new URL('/chi-siamo', SITE.url).href,
+  about: { '@type': 'Organization', name: SITE.name },
+};
+---
+
+<BaseLayout
+  title="Chi siamo"
+  description="Chi siamo, come lavoriamo e come metterti in contatto con noi."
+  jsonLd={jsonLd}
+>
+  <section class="wrap page-head">
+    <p class="eyebrow reveal">Chi siamo</p>
+    <h1 class="reveal">La storia dietro le produzioni</h1>
+  </section>
+
+  <section class="wrap about">
+    <div class="about__body flow">
+      {/* TESTO PROVVISORIO — verrà sostituito con il testo definitivo del cliente. */}
+      <p class="about__lead reveal">
+        Siamo {SITE.name}: diamo forma a idee e racconti attraverso il video,
+        dall'ideazione alla regia, fino al montaggio.
+      </p>
+      <p class="reveal">
+        Questo è un testo segnaposto. Lo sostituiremo con la presentazione
+        reale — chi siamo, come lavoriamo e cosa ci muove — non appena
+        riceveremo i contenuti definitivi.
+      </p>
+      <p class="reveal">
+        Ogni progetto nasce da una collaborazione stretta con il cliente: ascolto,
+        idea, produzione. Il risultato è un racconto su misura.
+      </p>
+    </div>
+
+    <aside class="about__contact reveal">
+      <h2>Contatti</h2>
+      <p>Per collaborazioni e preventivi:</p>
+      <p>
+        <a href="mailto:hello@centioniproduzioni.it" class="about__email"
+          >hello@centioniproduzioni.it</a
+        >
+      </p>
+    </aside>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding-block: clamp(2.5rem, 7vw, 5.5rem) var(--space-3);
+  }
+  .page-head h1 {
+    font-size: var(--step-3);
+    margin-top: var(--space-1);
+  }
+  .about {
+    display: grid;
+    gap: var(--space-5);
+    padding-bottom: var(--space-4);
+  }
+  @media (min-width: 52rem) {
+    .about {
+      grid-template-columns: 3fr 2fr;
+      gap: var(--space-6);
+    }
+  }
+  .about__body {
+    max-width: var(--measure);
+  }
+  .about__lead {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    line-height: 1.2;
+    color: var(--color-ink);
+  }
+  .about__body p:not(.about__lead) {
+    color: var(--color-ink-soft);
+  }
+  .about__contact h2 {
+    font-size: var(--step-1);
+    margin-bottom: var(--space-1);
+  }
+  .about__contact p {
+    color: var(--color-ink-soft);
+  }
+  .about__email {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    color: var(--color-ink);
+  }
+</style>

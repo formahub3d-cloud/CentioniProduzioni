@@ -4,10 +4,11 @@ Sito portfolio + blog costruito con **Astro** (output statico), micro-animazioni
 CSS-first e CMS git-based (**Sveltia CMS**, dalla Fase 2). Ottimizzato per
 performance e SEO/GEO.
 
-> Stato: **Fase 1 completata** (struttura, content collections, SEO, contenuti
-> di esempio). Il design è volutamente **neutro/provvisorio**: la palette, il
-> font e l'atmosfera su misura verranno applicati una volta ricevuto l'URL di
-> riferimento.
+> Stato: **Fase 1 completata + design su misura applicato.** Struttura a 3
+> pagine (Home, Chi siamo, Blog), content collections, SEO/GEO, contenuti di
+> esempio. Design editoriale monocromatico (font display **Fraunces** + **Inter**
+> per UI), ispirato all'atmosfera del riferimento ma originale. I **due testi**
+> del cliente verranno inseriti nelle aree segnaposto (Hero e Chi siamo).
 
 ## Comandi
 
@@ -24,19 +25,27 @@ npm run preview    # anteprima della build
 src/
   content/
     blog/            # articoli in Markdown
-    projects/        # progetti in Markdown
+    works/           # "lavori": copertine che linkano a video esterni
   content.config.ts  # schema delle due collection (fonte di verità)
   assets/media/      # ⟵ CARTELLA MEDIA UNICA (vedi sotto)
   components/        # componenti UI (.astro)
   layouts/           # layout di base
-  pages/             # rotte del sito
+  pages/             # rotte del sito (index, chi-siamo, blog/)
   styles/global.css  # design tokens + stili globali
   data/site.ts       # metadati del sito (nome, URL, nav, social)
 public/
-  fonts/             # font self-hosted (woff2)
+  fonts/             # font self-hosted (woff2): Fraunces + Inter
   favicon.svg
   admin/             # Sveltia CMS (aggiunto in Fase 2)
 ```
+
+## Pagine
+
+- **Home** (`/`) — hero, sezione **Lavori** (`#lavori`: griglia di copertine che
+  aprono un video esterno in una nuova scheda) e anteprime del **blog**.
+- **Chi siamo** (`/chi-siamo`) — presentazione + contatti.
+- **Blog** (`/blog`) — lista articoli; ogni articolo ha la sua pagina
+  (`/blog/<slug>`).
 
 ## Immagini — cartella media unica
 
@@ -81,10 +90,11 @@ Definite in `src/content.config.ts` — questa è la **fonte di verità** dei ca
 La config del CMS (Fase 2) rispecchia esattamente questi campi.
 
 **`blog`** — `title`, `date`, `cover` (opz.), `excerpt`, `tags[]`, `draft`, corpo.
-**`projects`** — `title`, `cover`, `year`, `role`, `links[]` (label+url),
-`description`, `order`, `draft`, corpo.
+**`works`** — `title`, `cover`, `video` (URL esterno), `role` (opz.),
+`year` (opz.), `order`, `draft`. Non hanno una pagina interna: la copertina
+linka direttamente al `video`.
 
-I post/progetti con `draft: true` non vengono pubblicati né inseriti in sitemap.
+I contenuti con `draft: true` non vengono pubblicati né inseriti in sitemap.
 
 ## SEO / GEO
 
@@ -103,7 +113,19 @@ I post/progetti con `draft: true` non vengono pubblicati né inseriti in sitemap
 
 ## Design
 
-Il look è guidato dai **design token** in `src/styles/global.css` (`:root`).
-Per ri-skinnare il sito basta modificare quei token: i componenti non usano
-colori/font hard-coded. Il nome del sito, la nav e i social stanno in
-`src/data/site.ts`.
+Editoriale e **monocromatico**: paper caldo off-white, inchiostro quasi nero,
+tanto spazio bianco, ritmo tipografico forte. Font display **Fraunces**
+(serif variabile, self-hosted) per i titoli + **Inter** per UI e testo.
+Ispirato all'atmosfera del sito di riferimento ma interamente originale
+(nessun codice/testo/immagine copiati).
+
+Il look è guidato dai **design token** in `src/styles/global.css` (`:root`):
+palette, scala tipografica, spaziature, motion. Per ri-skinnare basta
+modificare quei token — i componenti non usano colori/font hard-coded.
+Il nome del sito, la nav e i social stanno in `src/data/site.ts`.
+
+### Dove vanno i due testi del cliente
+
+- **Hero (home):** `src/pages/index.astro` — paragrafo marcato come
+  `Testo provvisorio`.
+- **Chi siamo:** `src/pages/chi-siamo.astro` — blocco marcato `TESTO PROVVISORIO`.
