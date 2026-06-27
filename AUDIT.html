@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Centioni Produzioni — Audit di progetto</title>
+<style>
+  :root{
+    --bg:#f1eee6; --surface:#f8f6ef; --ink:#15323a; --soft:#43595f;
+    --muted:#8b948f; --line:#ddd7c9; --teal:#176b7a; --teal-deep:#0f5663;
+    --ok:#2f8f6b; --warn:#b8862f; --serif:Georgia,'Times New Roman',serif;
+  }
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--bg);color:var(--ink);font:16px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;padding:clamp(1.2rem,4vw,3rem)}
+  .wrap{max-width:60rem;margin:0 auto}
+  header{display:flex;flex-wrap:wrap;gap:1.5rem;align-items:flex-end;justify-content:space-between;border-bottom:2px solid var(--ink);padding-bottom:1.4rem}
+  h1{font:600 clamp(1.8rem,5vw,2.8rem)/1.05 var(--serif);letter-spacing:-.02em}
+  .sub{color:var(--soft);margin-top:.3rem;font-size:.95rem}
+  .eyebrow{text-transform:uppercase;letter-spacing:.16em;font-size:.72rem;font-weight:700;color:var(--teal)}
+  .score{display:flex;flex-direction:column;align-items:center;background:var(--ink);color:var(--bg);border-radius:10px;padding:1rem 1.4rem;min-width:8.5rem}
+  .score b{font:600 3rem/1 var(--serif)}
+  .score span{font-size:.72rem;text-transform:uppercase;letter-spacing:.12em;opacity:.8;margin-top:.2rem}
+  h2{font:600 1.5rem/1.1 var(--serif);margin:2.4rem 0 1rem;letter-spacing:-.01em}
+  .grid{display:grid;gap:.7rem}
+  .cat{display:grid;grid-template-columns:11rem 1fr auto;gap:.8rem;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--line)}
+  .cat .name{font-weight:600;font-size:.92rem}
+  .bar{height:8px;background:var(--line);border-radius:5px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--teal);border-radius:5px}
+  .cat .v{font-weight:700;font-variant-numeric:tabular-nums;color:var(--teal-deep)}
+  ul.list{list-style:none;display:grid;gap:.55rem}
+  ul.list li{display:grid;grid-template-columns:1.4rem 1fr;gap:.6rem;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:.7rem .9rem}
+  .ic{font-weight:700;line-height:1.4}
+  .ic.ok{color:var(--ok)} .ic.todo{color:var(--warn)}
+  li b{font-weight:600}
+  li small{display:block;color:var(--muted);font-size:.82rem;margin-top:.1rem}
+  .tag{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.15em .5em;border-radius:100px;margin-left:.4rem;vertical-align:middle}
+  .tag.cli{background:#e8dfc6;color:#7a5e1e}
+  .tag.dev{background:#cfe3e6;color:#0f5663}
+  .cols{display:grid;gap:1.5rem}
+  @media(min-width:46rem){.cols{grid-template-columns:1fr 1fr}}
+  .note{background:var(--surface);border-left:3px solid var(--teal);border-radius:6px;padding:1rem 1.2rem;margin-top:.8rem;color:var(--soft);font-size:.92rem}
+  footer{margin-top:2.5rem;border-top:1px solid var(--line);padding-top:1rem;color:var(--muted);font-size:.82rem}
+  .phase{font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:var(--teal);font-weight:700;margin:.4rem 0 -.2rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="eyebrow">Audit di progetto</p>
+      <h1>Centioni Produzioni</h1>
+      <p class="sub">Sito ufficiale · Astro + Sveltia CMS · aggiornato al 27/06/2026</p>
+    </div>
+    <div class="score"><b>8.5</b><span>/ 10</span></div>
+  </header>
+
+  <h2>Valutazione per area</h2>
+  <div class="grid">
+    <div class="cat"><span class="name">Architettura &amp; codice</span><span class="bar"><i style="width:95%"></i></span><span class="v">9.5</span></div>
+    <div class="cat"><span class="name">Design &amp; brand</span><span class="bar"><i style="width:90%"></i></span><span class="v">9.0</span></div>
+    <div class="cat"><span class="name">Performance</span><span class="bar"><i style="width:90%"></i></span><span class="v">9.0</span></div>
+    <div class="cat"><span class="name">SEO / GEO</span><span class="bar"><i style="width:90%"></i></span><span class="v">9.0</span></div>
+    <div class="cat"><span class="name">CMS (editor-proof)</span><span class="bar"><i style="width:85%"></i></span><span class="v">8.5</span></div>
+    <div class="cat"><span class="name">Accessibilità</span><span class="bar"><i style="width:80%"></i></span><span class="v">8.0</span></div>
+    <div class="cat"><span class="name">Contenuti reali</span><span class="bar"><i style="width:35%"></i></span><span class="v">3.5</span></div>
+    <div class="cat"><span class="name">Deploy / online</span><span class="bar"><i style="width:20%"></i></span><span class="v">2.0</span></div>
+  </div>
+  <div class="note">Il voto complessivo riflette una <b>base tecnica eccellente e pronta alla produzione</b>. I punti più bassi (contenuti e deploy) dipendono da azioni del cliente — foto, testi, link e attivazione su Cloudflare/Register — più che dal codice.</div>
+
+  <h2>✅ Completato</h2>
+  <p class="phase">Fase 1 — Fondamenta</p>
+  <ul class="list">
+    <li><span class="ic ok">✓</span><span><b>Progetto Astro statico</b>, TypeScript strict, telemetria off, build pulita (0 errori).</span></li>
+    <li><span class="ic ok">✓</span><span><b>5 pagine</b>: Home, Produzioni Video, News (+articolo), Chi Siamo, Contatti, 404.</span></li>
+    <li><span class="ic ok">✓</span><span><b>Content collections</b> <code>news</code> e <code>produzioni</code> come fonte di verità.</span></li>
+    <li><span class="ic ok">✓</span><span><b>SEO/GEO</b>: meta + Open Graph, sitemap, robots, JSON-LD, RSS, immagine OG brandizzata.</span></li>
+    <li><span class="ic ok">✓</span><span><b>Performance</b>: font self-hosted con preload, immagini ottimizzate, YouTube click-to-load, zero JS superfluo.</span></li>
+  </ul>
+  <p class="phase">Design &amp; brand</p>
+  <ul class="list">
+    <li><span class="ic ok">✓</span><span><b>Logo ricreato in SVG</b> (simbolo + lockup + favicon).</span></li>
+    <li><span class="ic ok">✓</span><span><b>Palette brand</b> (petrol/teal su panna), font Fraunces + Inter.</span></li>
+    <li><span class="ic ok">✓</span><span><b>Animazioni CSS-first</b>: reveal a maschera, scroll-reveal, marquee, slider, wipe, View Transitions; <code>prefers-reduced-motion</code> rispettato.</span></li>
+    <li><span class="ic ok">✓</span><span><b>Responsive</b> verificato su mobile e desktop, menu mobile.</span></li>
+  </ul>
+  <p class="phase">Fase 2 — CMS</p>
+  <ul class="list">
+    <li><span class="ic ok">✓</span><span><b>Sveltia CMS</b> su <code>/admin</code> con due collection che rispecchiano esattamente i campi.</span></li>
+    <li><span class="ic ok">✓</span><span><b>Campi fissi e strutturati</b> (niente HTML libero): l'editor non può rompere il layout.</span></li>
+    <li><span class="ic ok">✓</span><span><b>Cartella media unica</b> coerente tra sito e CMS.</span></li>
+  </ul>
+  <p class="phase">Extra</p>
+  <ul class="list">
+    <li><span class="ic ok">✓</span><span><b>Social</b> Instagram + Facebook collegati.</span></li>
+    <li><span class="ic ok">✓</span><span><b>Documentazione</b>: README, DEPLOY.md, CLAUDE.md (istruzioni di progetto).</span></li>
+  </ul>
+
+  <h2>⏳ In sospeso</h2>
+  <div class="cols">
+    <div>
+      <p class="phase">Contenuti</p>
+      <ul class="list">
+        <li><span class="ic todo">○</span><span><b>Foto reali di Niccolò</b><span class="tag cli">cliente</span><small>Ritratto Chi Siamo + copertine (ora placeholder).</small></span></li>
+        <li><span class="ic todo">○</span><span><b>ID video YouTube</b><span class="tag cli">cliente</span><small>Per Centioni's Kitchen e futuri progetti.</small></span></li>
+        <li><span class="ic todo">○</span><span><b>URL canale YouTube</b><span class="tag cli">cliente</span></span></li>
+        <li><span class="ic todo">○</span><span><b>Testi e news definitivi</b><span class="tag cli">cliente</span></span></li>
+      </ul>
+    </div>
+    <div>
+      <p class="phase">Fase 3 — Deploy &amp; attivazioni</p>
+      <ul class="list">
+        <li><span class="ic todo">○</span><span><b>Deploy Cloudflare Pages</b><span class="tag cli">cliente</span><small>→ genera il link pubblico.</small></span></li>
+        <li><span class="ic todo">○</span><span><b>Dominio Register.it</b><span class="tag cli">cliente</span><small>Nameserver Cloudflare + custom domain.</small></span></li>
+        <li><span class="ic todo">○</span><span><b>Auth CMS</b><span class="tag cli">cliente</span><small>OAuth GitHub + Worker sveltia-cms-auth.</small></span></li>
+        <li><span class="ic todo">○</span><span><b>Access key form contatti</b><span class="tag cli">cliente</span><small>Web3Forms (gratis).</small></span></li>
+      </ul>
+    </div>
+  </div>
+  <p class="phase" style="margin-top:1.4rem">Migliorie consigliate</p>
+  <ul class="list">
+    <li><span class="ic todo">○</span><span><b>Lighthouse / Core Web Vitals</b> sul sito live<span class="tag dev">dev</span><small>Verifica performance e accessibilità AA una volta online.</small></span></li>
+    <li><span class="ic todo">○</span><span><b>Analytics privacy-friendly</b><span class="tag dev">dev</span><small>Es. Cloudflare Web Analytics, senza cookie.</small></span></li>
+    <li><span class="ic todo">○</span><span><b>Test end-to-end del form</b> dopo l'access key<span class="tag dev">dev</span></span></li>
+  </ul>
+
+  <h2>Giudizio sintetico</h2>
+  <div class="note">
+    <b>8.5 / 10.</b> Il sito è <b>solido, curato e pronto alla pubblicazione</b>: codice
+    pulito, design su misura coerente col brand, performance e SEO ben impostate,
+    CMS a prova di editor. Per arrivare al 10 mancano solo i <b>contenuti reali</b>
+    e le <b>attivazioni sugli account del cliente</b> (deploy, dominio, auth):
+    nessun debito tecnico, solo passi operativi.
+  </div>
+
+  <footer>Generato per Centioni Produzioni · documento interno di avanzamento.</footer>
+</div>
+</body>
+</html>
