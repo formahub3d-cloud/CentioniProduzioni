@@ -25,7 +25,7 @@ const {
 
 const pageTitle = title ? `${title} — ${SITE.name}` : SITE.title;
 const canonical = new URL(Astro.url.pathname, SITE.url).href;
-const ogImage = image ? new URL(image, SITE.url).href : undefined;
+const ogImage = new URL(image ?? SITE.ogImage, SITE.url).href;
 ---
 
 <title>{pageTitle}</title>

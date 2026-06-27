@@ -24,6 +24,8 @@ export const SITE = {
   lang: 'it',
   /** Contact email shown on the Contatti page / footer. */
   email: 'info@centioniproduzioni.it',
+  /** Default social-share image (root-relative, in /public). */
+  ogImage: '/og-default.jpg',
 } as const;
 
 /**
@@ -51,7 +53,8 @@ export const NAV: { label: string; href: string }[] = [
  * Sostituire gli # con gli URL reali dei canali ufficiali.
  */
 export const SOCIAL: { label: string; href: string }[] = [
+  { label: 'Instagram', href: 'https://www.instagram.com/niccolocentioni_official' },
+  { label: 'Facebook', href: 'https://www.facebook.com/share/1BpVdDoW3f/' },
+  // TODO: inserire l'URL del canale YouTube ufficiale.
   { label: 'YouTube', href: '#' },
-  { label: 'Instagram', href: '#' },
-  { label: 'TikTok', href: '#' },
 ];

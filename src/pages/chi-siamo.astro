@@ -1,6 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../data/site.ts';
+import ritratto from '../assets/media/niccolo-ritratto.jpg';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -29,31 +31,41 @@ const jsonLd = {
   </section>
 
   <section class="wrap about">
-    <div class="about__body flow">
-      <p class="about__lead reveal">
-        Dalle prime esperienze nel mondo dello spettacolo fino ai successi
-        televisivi che lo hanno reso un volto amato dal pubblico.
-      </p>
-      <p class="reveal">
-        Questa sezione racconta il percorso artistico e professionale di Niccolò
-        Centioni: la sua evoluzione, umana e lavorativa, attraverso gli anni
-        passati davanti e dietro la macchina da presa.
-      </p>
-      <p class="reveal">
-        Un cammino che arriva fino a oggi, con la nascita di
-        <strong>Centioni Produzioni</strong>: la nuova realtà con cui Niccolò
-        firma e realizza i suoi contenuti video, i suoi format per i social e i
-        suoi nuovi progetti digitali.
-      </p>
-      <p class="reveal">
-        È da qui che prendono vita i progetti — da <em>Centioni's Kitchen</em>
-        ai nuovi format in arrivo: un unico spazio dove ideare, produrre e
-        raccontare.
-      </p>
-    </div>
+    <figure class="about__portrait reveal media-reveal">
+      <Image
+        src={ritratto}
+        alt="Niccolò Centioni"
+        widths={[480, 800, 1000]}
+        sizes="(min-width: 52rem) 40vw, 100vw"
+        loading="eager"
+      />
+    </figure>
 
-    <aside class="about__aside reveal">
-      <div class="about__card">
+    <div class="about__content">
+      <div class="about__body flow">
+        <p class="about__lead reveal">
+          Dalle prime esperienze nel mondo dello spettacolo fino ai successi
+          televisivi che lo hanno reso un volto amato dal pubblico.
+        </p>
+        <p class="reveal">
+          Questa sezione racconta il percorso artistico e professionale di
+          Niccolò Centioni: la sua evoluzione, umana e lavorativa, attraverso
+          gli anni passati davanti e dietro la macchina da presa.
+        </p>
+        <p class="reveal">
+          Un cammino che arriva fino a oggi, con la nascita di
+          <strong>Centioni Produzioni</strong>: la nuova realtà con cui Niccolò
+          firma e realizza i suoi contenuti video, i suoi format per i social e
+          i suoi nuovi progetti digitali.
+        </p>
+        <p class="reveal">
+          È da qui che prendono vita i progetti — da <em>Centioni's Kitchen</em>
+          ai nuovi format in arrivo: un unico spazio dove ideare, produrre e
+          raccontare.
+        </p>
+      </div>
+
+      <div class="about__card reveal">
         <p class="about__cardlabel">In breve</p>
         <ul class="about__facts">
           <li><span>Brand</span>{SITE.name}</li>
@@ -62,7 +74,7 @@ const jsonLd = {
         </ul>
         <a href="/contatti" class="btn">Lavoriamo insieme</a>
       </div>
-    </aside>
+    </div>
   </section>
 </BaseLayout>
 
@@ -74,17 +86,37 @@ const jsonLd = {
     font-size: var(--step-3);
     margin-top: var(--space-1);
   }
+
   .about {
     display: grid;
-    gap: var(--space-5);
+    gap: var(--space-4);
     padding-bottom: var(--space-5);
   }
   @media (min-width: 52rem) {
     .about {
-      grid-template-columns: 3fr 2fr;
+      grid-template-columns: 2fr 3fr;
       gap: var(--space-6);
+      align-items: start;
+    }
+    .about__portrait {
+      position: sticky;
+      top: 5.5rem;
     }
   }
+
+  .about__portrait {
+    margin: 0;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--color-line);
+    aspect-ratio: 4 / 5;
+  }
+  .about__portrait :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
   .about__body {
     max-width: var(--measure);
   }
@@ -97,11 +129,14 @@ const jsonLd = {
   .about__body p:not(.about__lead) {
     color: var(--color-ink-soft);
   }
+
   .about__card {
+    margin-top: var(--space-4);
     background: var(--color-surface);
     border: 1px solid var(--color-line);
     border-radius: var(--radius);
     padding: var(--space-3);
+    max-width: var(--measure);
   }
   .about__cardlabel {
     font-family: var(--font-sans);
