@@ -6,9 +6,11 @@ interface Props {
   work: CollectionEntry<'works'>;
   /** Eager-load the first cards above the fold. */
   eager?: boolean;
+  /** Stagger index for the reveal cascade. */
+  index?: number;
 }
 
-const { work, eager = false } = Astro.props;
+const { work, eager = false, index = 0 } = Astro.props;
 const { title, cover, video, role, year } = work.data;
 const meta = [role, year].filter(Boolean).join(' · ');
 ---
@@ -16,11 +18,12 @@ const meta = [role, year].filter(Boolean).join(' · ');
 <a
   href={video}
   class="work reveal"
+  style={`--i: ${index}`}
   target="_blank"
   rel="noopener"
   aria-label={`${title} — guarda il video (si apre in una nuova scheda)`}
 >
-  <figure class="work__media">
+  <figure class="work__media wipe">
     <Image
       src={cover}
       alt={`Copertina del lavoro ${title}`}
@@ -61,13 +64,13 @@ const meta = [role, year].filter(Boolean).join(' · ');
     height: 100%;
     object-fit: cover;
     transition: transform 0.7s var(--ease), filter 0.5s var(--ease);
-    filter: grayscale(0.15);
+    filter: grayscale(1);
   }
 
   .work:hover .work__media :global(img),
   .work:focus-visible .work__media :global(img) {
-    transform: scale(1.04);
-    filter: grayscale(0);
+    transform: scale(1.05);
+    filter: grayscale(1) contrast(1.06);
   }
 
   .work__play {

@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import WorkCard from '../components/WorkCard.astro';
 import PostCard from '../components/PostCard.astro';
+import Marquee from '../components/Marquee.astro';
 
 const works = (await getCollection('works', ({ data }) => !data.draft)).sort(
   (a, b) => a.data.order - b.data.order,
@@ -17,32 +18,36 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
   <!-- Hero -->
   <section class="hero wrap">
     <p class="eyebrow reveal">Produzioni video</p>
-    <h1 class="hero__title reveal">
-      Diamo forma alle idee,<br />un'inquadratura alla volta.
+    <h1 class="hero__title reveal reveal-lines">
+      <span class="line"><span>Diamo forma alle idee,</span></span>
+      <span class="line"><span>un'inquadratura alla volta.</span></span>
     </h1>
-    <p class="hero__lead reveal">
+    <p class="hero__lead reveal" style="--i: 2">
       {/* Testo provvisorio — sostituibile con il testo definitivo del cliente. */}
       Centioni Produzioni racconta storie attraverso il video: dall'idea alla
       regia, fino al montaggio finale.
     </p>
-    <div class="hero__actions reveal">
+    <div class="hero__actions reveal" style="--i: 3">
       <a href="#lavori" class="btn">Guarda i lavori</a>
       <a href="/chi-siamo" class="btn btn--ghost">Chi siamo</a>
     </div>
   </section>
 
+  <!-- Running editorial band -->
+  <Marquee />
+
   <!-- Lavori: copertine linkabili a video esterni -->
   <section id="lavori" class="wrap section section--works">
     <header class="section__head">
-      <h2 class="reveal">Lavori</h2>
-      <p class="section__hint eyebrow reveal">Le copertine aprono il video</p>
+      <h2 class="reveal reveal-lines"><span class="line"><span>Lavori</span></span></h2>
+      <p class="section__hint eyebrow reveal" style="--i: 1">Le copertine aprono il video</p>
     </header>
 
     {
       works.length > 0 ? (
         <div class="works-grid">
           {works.map((w, i) => (
-            <WorkCard work={w} eager={i < 2} />
+            <WorkCard work={w} eager={i < 2} index={i % 2} />
           ))}
         </div>
       ) : (
@@ -56,8 +61,8 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
     posts.length > 0 && (
       <section class="wrap section">
         <header class="section__head">
-          <h2 class="reveal">Dal blog</h2>
-          <a href="/blog" class="link-arrow reveal">
+          <h2 class="reveal reveal-lines"><span class="line"><span>Dal blog</span></span></h2>
+          <a href="/blog" class="link-arrow reveal" style="--i: 1">
             Tutti gli articoli <span aria-hidden="true">→</span>
           </a>
         </header>

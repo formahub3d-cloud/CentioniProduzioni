@@ -11,7 +11,9 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 <BaseLayout title="Blog" description="Articoli, racconti e note dietro le quinte.">
   <section class="wrap page-head">
     <p class="eyebrow reveal">Blog</p>
-    <h1 class="reveal">Articoli &amp; racconti</h1>
+    <h1 class="reveal reveal-lines">
+      <span class="line"><span>Articoli &amp; racconti</span></span>
+    </h1>
     <p class="page-head__lead reveal">
       Note, processi e idee dietro le produzioni.
     </p>

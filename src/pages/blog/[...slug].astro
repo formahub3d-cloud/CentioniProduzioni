@@ -50,13 +50,13 @@ const jsonLd = {
           </ul>
         )}
       </div>
-      <h1 class="reveal">{title}</h1>
+      <h1 class="reveal reveal-lines"><span class="line"><span>{title}</span></span></h1>
       <p class="post__excerpt reveal">{excerpt}</p>
     </header>
 
     {
       cover && (
-        <div class="wrap post__cover reveal">
+        <div class="wrap post__cover reveal media-reveal">
           <Image
             src={cover}
             alt={`Copertina dell'articolo ${title}`}
@@ -112,6 +112,7 @@ const jsonLd = {
   .post__cover :global(img) {
     width: 100%;
     border-radius: var(--radius);
+    filter: grayscale(1);
   }
   .post__back {
     margin-top: var(--space-5);

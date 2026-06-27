@@ -15,7 +15,7 @@ const { title, date, cover, excerpt, tags } = post.data;
   <a href={`/blog/${post.id}`} class="post-card__link">
     {
       cover && (
-        <div class="post-card__media">
+        <div class="post-card__media wipe">
           <Image
             src={cover}
             alt={`Copertina dell'articolo ${title}`}
@@ -64,11 +64,13 @@ const { title, date, cover, excerpt, tags } = post.data;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.6s var(--ease);
+    filter: grayscale(1);
+    transition: transform 0.6s var(--ease), filter 0.5s var(--ease);
   }
 
   .post-card:hover .post-card__media :global(img) {
     transform: scale(1.04);
+    filter: grayscale(1) contrast(1.06);
   }
 
   .post-card__meta {

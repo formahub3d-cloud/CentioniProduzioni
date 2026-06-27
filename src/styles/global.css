@@ -27,16 +27,16 @@
 }
 
 :root {
-  /* Palette — monochrome, warm off-white paper with near-black ink */
-  --color-bg: #f3f1ec;
-  --color-surface: #faf9f6;
-  --color-ink: #161412;
-  --color-ink-soft: #46423c;
-  --color-muted: #948e83;
-  --color-line: #ddd9d0;
-  /* Accent kept monochrome by design; one subtle warm tone for rare emphasis */
-  --color-accent: #161412;
-  --color-accent-ink: #f3f1ec;
+  /* Palette — black & white. Neutral near-white paper, near-black ink. */
+  --color-bg: #f4f4f3;
+  --color-surface: #fbfbfa;
+  --color-ink: #111111;
+  --color-ink-soft: #3c3c3c;
+  --color-muted: #8c8c8c;
+  --color-line: #e1e1df;
+  /* Monochrome by design — accent is ink itself. */
+  --color-accent: #111111;
+  --color-accent-ink: #f4f4f3;
 
   /* Typography */
   --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
@@ -214,17 +214,138 @@ a:hover {
   transform: translateX(5px);
 }
 
-/* --- Scroll-reveal (soft) --- */
+/* --- Scroll-reveal (soft, staggered) --- */
 .reveal {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(18px);
   transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease);
+  transition-delay: calc(var(--i, 0) * 80ms);
   will-change: opacity, transform;
 }
 
 .reveal.is-visible {
   opacity: 1;
   transform: none;
+}
+
+/* --- Heading reveal: line-by-line mask (the inner line slides up) --- */
+.reveal-lines {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal-lines .line {
+  display: block;
+  overflow: hidden;
+}
+
+.reveal-lines .line > span {
+  display: block;
+  transform: translateY(110%);
+  transition: transform 0.9s var(--ease);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+
+.reveal-lines.is-visible .line > span {
+  transform: none;
+}
+
+.reveal-lines .line:nth-child(2) > span {
+  transition-delay: calc(var(--i, 0) * 90ms + 90ms);
+}
+.reveal-lines .line:nth-child(3) > span {
+  transition-delay: calc(var(--i, 0) * 90ms + 180ms);
+}
+
+/* --- Media reveal: clip-wipe upward + slow scale settle --- */
+.media-reveal {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 1s var(--ease);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+
+.media-reveal :global(img),
+.media-reveal img {
+  transform: scale(1.18);
+  transition: transform 1.2s var(--ease);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+
+.is-visible .media-reveal,
+.media-reveal.is-visible {
+  clip-path: inset(0 0 0% 0);
+}
+
+.is-visible .media-reveal img,
+.media-reveal.is-visible img {
+  transform: scale(1);
+}
+
+/* --- Wipe: clip-path reveal for card covers (no img scale → leaves hover free) --- */
+.wipe {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 0.95s var(--ease);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+
+.is-visible .wipe,
+.wipe.is-visible {
+  clip-path: inset(0 0 0% 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wipe {
+    clip-path: none;
+  }
+}
+
+/* --- Marquee: running editorial text band --- */
+.marquee {
+  overflow: hidden;
+  border-block: 1px solid var(--color-line);
+  padding-block: clamp(0.9rem, 2.4vw, 1.6rem);
+  user-select: none;
+}
+
+.marquee__track {
+  display: flex;
+  width: max-content;
+  gap: 0;
+  animation: marquee 38s linear infinite;
+}
+
+.marquee:hover .marquee__track {
+  animation-play-state: paused;
+}
+
+.marquee__group {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.marquee__item {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4.5vw, 3.2rem);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  padding-inline: clamp(1rem, 3vw, 2.2rem);
+  white-space: nowrap;
+}
+
+.marquee__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: var(--color-ink);
+  flex-shrink: 0;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 /* --- Reduced motion: disable all non-essential animation --- */
@@ -241,6 +362,18 @@ a:hover {
   .reveal {
     opacity: 1;
     transform: none;
+  }
+  .reveal-lines .line > span {
+    transform: none;
+  }
+  .media-reveal {
+    clip-path: none;
+  }
+  .media-reveal img {
+    transform: none;
+  }
+  .marquee__track {
+    animation: none;
   }
 }
 

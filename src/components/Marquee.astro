@@ -1,0 +1,30 @@
+---
+interface Props {
+  /** Words shown in the running band. */
+  items?: string[];
+}
+
+const {
+  items = ['Regia', 'Montaggio', 'Color', 'Produzione', 'Storytelling', 'Riprese'],
+} = Astro.props;
+
+// Two identical groups → seamless loop (the track translates by -50%).
+const groups = [0, 1];
+---
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    {
+      groups.map(() => (
+        <div class="marquee__group">
+          {items.map((word) => (
+            <>
+              <span class="marquee__item">{word}</span>
+              <span class="marquee__dot" />
+            </>
+          ))}
+        </div>
+      ))
+    }
+  </div>
+</div>
