@@ -98,14 +98,49 @@ Il form invia le email tramite **Web3Forms** (gratis, nessun backend):
 
 ---
 
-## 5) CMS (Fase 2 → auth in Fase 3) 🧑
+## 5) Autenticazione del CMS — Sveltia + GitHub 🧑
 
-Quando attiviamo **Sveltia CMS** (`/admin`) servirà l'autenticazione GitHub:
-- una **OAuth App GitHub** (Client ID + Secret),
-- un **Cloudflare Worker** `sveltia-cms-auth` con le variabili segrete.
+Per usare `/admin` e salvare i contenuti, Sveltia deve autenticarti su GitHub.
+Si usa un piccolo **Cloudflare Worker** ufficiale (`sveltia-cms-auth`) che gestisce
+l'OAuth. Prerequisito: il sito deve essere già online (punto 1) e conoscere il
+suo dominio (es. `centioniproduzioni.it` o `*.pages.dev`).
 
-Te ne preparo la lista esatta di valori/comandi al momento della Fase 3. Anche
-questi li configuri tu sui tuoi account.
+### 5A — Crea la OAuth App su GitHub
+1. GitHub → **Settings** → **Developer settings** → **OAuth Apps** → **New OAuth App**.
+2. Compila:
+   - **Application name:** `Centioni Produzioni CMS`
+   - **Homepage URL:** `https://centioniproduzioni.it`
+   - **Authorization callback URL:** `https://centioni-cms-auth.<tuo-subdominio>.workers.dev/callback`
+     *(il dominio del Worker lo ottieni al passo 5B; puoi tornare qui a sistemarlo)*
+3. **Register application** → annota **Client ID** e genera un **Client Secret**.
+
+### 5B — Deploya il Worker `sveltia-cms-auth`
+Modo più rapido (dal repo ufficiale):
+1. Vai su **github.com/sveltia/sveltia-cms-auth** → pulsante **Deploy to Cloudflare**.
+2. Cloudflare crea il Worker (chiamalo es. `centioni-cms-auth`). Annota il suo URL
+   `https://centioni-cms-auth.<tuo-subdominio>.workers.dev`.
+3. Worker → **Settings → Variables** → aggiungi (come *Secret*):
+   - `GITHUB_CLIENT_ID` = il Client ID del passo 5A
+   - `GITHUB_CLIENT_SECRET` = il Client Secret del passo 5A
+   - `ALLOWED_DOMAINS` = `centioniproduzioni.it,*.pages.dev`
+4. Torna alla OAuth App (5A) e verifica che la **callback URL** punti a
+   `https://centioni-cms-auth.<tuo-subdominio>.workers.dev/callback`.
+
+### 5C — Collega il Worker al CMS
+In `public/admin/config.yml`, sotto `backend:`, **decommenta e compila**:
+```yaml
+backend:
+  name: github
+  repo: formahub3d-cloud/centioniproduzioni
+  branch: main            # il branch di produzione
+  base_url: https://centioni-cms-auth.<tuo-subdominio>.workers.dev
+```
+Commit + push. Ora `https://centioniproduzioni.it/admin` ti farà fare login con
+GitHub e potrai pubblicare News e Produzioni.
+
+> **Valori che mi servono da te** (se vuoi che aggiorni io il `config.yml`):
+> solo l'**URL del Worker**. Client ID/Secret restano sui tuoi account — non
+> servono nel repo.
 
 ---
 
@@ -115,5 +150,8 @@ questi li configuri tu sui tuoi account.
 - [ ] Dominio su Cloudflare, nameserver cambiati su Register.it, stato *Active*
 - [ ] Custom domain apex + www attivi con HTTPS
 - [ ] `SITE.url`, `SITE.email`, `SOCIAL` aggiornati
-- [ ] Access key Web3Forms inserita
+- [ ] Access key Web3Forms inserita → form testato end-to-end
+- [ ] OAuth App GitHub creata (Client ID + Secret)
+- [ ] Worker `sveltia-cms-auth` deployato con `GITHUB_CLIENT_ID`/`SECRET`/`ALLOWED_DOMAINS`
+- [ ] `base_url` inserito in `public/admin/config.yml` → login su `/admin` OK
 - [ ] Immagini, ID YouTube e testi reali inseriti
