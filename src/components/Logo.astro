@@ -1,0 +1,51 @@
+---
+/**
+ * Centioni Produzioni — logo mark (the "C" + growth arrow).
+ * Inline SVG using currentColor, so it inherits the surrounding text color
+ * and scales crisply at any size. Original recreation of the brand mark.
+ */
+interface Props {
+  size?: number | string;
+  title?: string;
+  class?: string;
+}
+const { size = 40, title = 'Centioni Produzioni', class: cls } = Astro.props;
+---
+
+<svg
+  class={cls}
+  width={size}
+  height={size}
+  viewBox="0 0 120 120"
+  role="img"
+  aria-label={title}
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <circle
+    cx="55"
+    cy="63"
+    r="35"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="15"
+    stroke-linecap="round"
+    stroke-dasharray="158 62"
+    transform="rotate(-52 55 63)"
+  ></circle>
+  <line
+    x1="50"
+    y1="68"
+    x2="78"
+    y2="40"
+    stroke="currentColor"
+    stroke-width="15"
+    stroke-linecap="round"
+  ></line>
+  <path
+    d="M95 23 L90 54 L63 27 Z"
+    fill="currentColor"
+    stroke="currentColor"
+    stroke-width="4"
+    stroke-linejoin="round"
+  ></path>
+</svg>

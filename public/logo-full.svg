@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 470" role="img" aria-label="Centioni Produzioni — Video, Social, Blog, News">
+  <g fill="#176B7A">
+    <!-- mark -->
+    <g transform="translate(245 24) scale(1.25)">
+      <circle cx="55" cy="63" r="35" fill="none" stroke="#176B7A" stroke-width="15"
+              stroke-linecap="round" stroke-dasharray="158 62" transform="rotate(-52 55 63)"/>
+      <line x1="50" y1="68" x2="78" y2="40" stroke="#176B7A" stroke-width="15" stroke-linecap="round"/>
+      <path d="M95 23 L90 54 L63 27 Z" stroke="#176B7A" stroke-width="4" stroke-linejoin="round"/>
+    </g>
+    <!-- wordmark -->
+    <text x="320" y="290" text-anchor="middle"
+          font-family="Helvetica, Arial, sans-serif" font-weight="500"
+          font-size="88" letter-spacing="6">CENTIONI</text>
+    <text x="322" y="350" text-anchor="middle"
+          font-family="Helvetica, Arial, sans-serif" font-weight="600"
+          font-size="50" letter-spacing="12">PRODUZIONI</text>
+    <text x="322" y="406" text-anchor="middle"
+          font-family="Helvetica, Arial, sans-serif" font-weight="600"
+          font-size="23" letter-spacing="5">VIDEO &#8226; SOCIAL &#8226; BLOG &#8226; NEWS</text>
+  </g>
+</svg>

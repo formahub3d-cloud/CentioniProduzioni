@@ -3,19 +3,22 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+const posts = (await getCollection('news', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
 ---
 
-<BaseLayout title="Blog" description="Articoli, racconti e note dietro le quinte.">
+<BaseLayout
+  title="News"
+  description="News e aggiornamenti: novità sui progetti e dal mondo dello spettacolo."
+>
   <section class="wrap page-head">
-    <p class="eyebrow reveal">Blog</p>
+    <p class="eyebrow reveal">News</p>
     <h1 class="reveal reveal-lines">
-      <span class="line"><span>Articoli &amp; racconti</span></span>
+      <span class="line"><span>News &amp; Aggiornamenti</span></span>
     </h1>
-    <p class="page-head__lead reveal">
-      Note, processi e idee dietro le produzioni.
+    <p class="page-head__lead reveal" style="--i: 1">
+      Notizie, novità dal mondo dello spettacolo e aggiornamenti sui progetti.
     </p>
   </section>
 
@@ -28,7 +31,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
           ))}
         </div>
       ) : (
-        <p>Nessun articolo pubblicato per ora.</p>
+        <p>Nessuna news pubblicata per ora.</p>
       )
     }
   </section>

@@ -1,116 +1,123 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import WorkCard from '../components/WorkCard.astro';
-import PostCard from '../components/PostCard.astro';
+import Slider from '../components/Slider.astro';
 import Marquee from '../components/Marquee.astro';
+import ProduzioneCard from '../components/ProduzioneCard.astro';
+import PostCard from '../components/PostCard.astro';
+import { SITE } from '../data/site.ts';
 
-const works = (await getCollection('works', ({ data }) => !data.draft)).sort(
+const produzioni = (await getCollection('produzioni', ({ data }) => !data.draft)).sort(
   (a, b) => a.data.order - b.data.order,
 );
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft))
+const slides = produzioni
+  .filter((p) => p.data.cover)
+  .slice(0, 5)
+  .map((p) => ({ src: p.data.cover!, label: p.data.title }));
+
+const news = (await getCollection('news', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
+  .slice(0, 2);
 ---
 
 <BaseLayout>
   <!-- Hero -->
   <section class="hero wrap">
-    <p class="eyebrow reveal">Produzioni video</p>
+    <p class="eyebrow reveal">Il canale ufficiale</p>
     <h1 class="hero__title reveal reveal-lines">
-      <span class="line"><span>Diamo forma alle idee,</span></span>
-      <span class="line"><span>un'inquadratura alla volta.</span></span>
+      <span class="line"><span>Centioni</span></span>
+      <span class="line"><span>Produzioni</span></span>
     </h1>
-    <p class="hero__lead reveal" style="--i: 2">
-      {/* Testo provvisorio — sostituibile con il testo definitivo del cliente. */}
-      Centioni Produzioni racconta storie attraverso il video: dall'idea alla
-      regia, fino al montaggio finale.
-    </p>
+    <p class="hero__lead reveal" style="--i: 2">{SITE.description}</p>
     <div class="hero__actions reveal" style="--i: 3">
-      <a href="#lavori" class="btn">Guarda i lavori</a>
-      <a href="/chi-siamo" class="btn btn--ghost">Chi siamo</a>
+      <a href="/produzioni" class="btn">Le produzioni</a>
+      <a href="/contatti" class="btn btn--ghost">Contatti</a>
     </div>
   </section>
 
-  <!-- Running editorial band -->
+  {
+    slides.length > 0 && (
+      <section class="wrap hero__media reveal">
+        <Slider slides={slides} />
+      </section>
+    )
+  }
+
   <Marquee />
 
-  <!-- Lavori: copertine linkabili a video esterni -->
-  <section id="lavori" class="wrap section section--works">
+  <!-- Produzioni -->
+  <section class="wrap section">
     <header class="section__head">
-      <h2 class="reveal reveal-lines"><span class="line"><span>Lavori</span></span></h2>
-      <p class="section__hint eyebrow reveal" style="--i: 1">Le copertine aprono il video</p>
+      <h2 class="reveal reveal-lines"><span class="line"><span>Le Nostre Produzioni</span></span></h2>
+      <a href="/produzioni" class="link-arrow reveal" style="--i: 1">
+        Tutte le produzioni <span aria-hidden="true">→</span>
+      </a>
     </header>
-
-    {
-      works.length > 0 ? (
-        <div class="works-grid">
-          {works.map((w, i) => (
-            <WorkCard work={w} eager={i < 2} index={i % 2} />
-          ))}
-        </div>
-      ) : (
-        <p>Presto online i primi lavori.</p>
-      )
-    }
+    <div class="prod-grid">
+      {produzioni.map((p, i) => (
+        <ProduzioneCard produzione={p} index={i % 3} eager={i < 3} />
+      ))}
+    </div>
   </section>
 
-  <!-- Blog -->
+  <!-- News -->
   {
-    posts.length > 0 && (
+    news.length > 0 && (
       <section class="wrap section">
         <header class="section__head">
-          <h2 class="reveal reveal-lines"><span class="line"><span>Dal blog</span></span></h2>
-          <a href="/blog" class="link-arrow reveal" style="--i: 1">
-            Tutti gli articoli <span aria-hidden="true">→</span>
+          <h2 class="reveal reveal-lines"><span class="line"><span>News &amp; Aggiornamenti</span></span></h2>
+          <a href="/news" class="link-arrow reveal" style="--i: 1">
+            Tutte le news <span aria-hidden="true">→</span>
           </a>
         </header>
         <div class="stack">
-          {posts.map((post) => (
+          {news.map((post) => (
             <PostCard post={post} />
           ))}
         </div>
       </section>
     )
   }
+
+  <!-- Contact CTA -->
+  <section class="wrap">
+    <div class="cta reveal">
+      <h2 class="cta__title">Hai un progetto o una collaborazione?</h2>
+      <p class="cta__text">Raccontaci la tua idea: ti rispondiamo presto.</p>
+      <a href="/contatti" class="btn">Scrivici</a>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
   .hero {
-    padding-block: clamp(3.5rem, 10vw, 8.5rem) var(--space-5);
+    padding-block: clamp(3rem, 8vw, 6.5rem) var(--space-3);
   }
-
   .hero__title {
     font-size: var(--step-4);
     margin-top: var(--space-2);
-    max-width: 18ch;
+    line-height: 0.98;
   }
-
   .hero__lead {
     margin-top: var(--space-3);
     font-size: var(--step-1);
     color: var(--color-ink-soft);
     max-width: var(--measure);
   }
-
   .hero__actions {
     margin-top: var(--space-4);
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2);
   }
+  .hero__media {
+    margin-bottom: var(--space-5);
+  }
 
   .section {
     padding-block: var(--space-4);
   }
-
-  .section--works {
-    scroll-margin-top: 5rem;
-    padding-top: var(--space-5);
-    border-top: 1px solid var(--color-line);
-  }
-
   .section__head {
     display: flex;
     align-items: baseline;
@@ -118,23 +125,33 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
     gap: var(--space-2);
     margin-bottom: var(--space-4);
   }
-
   .section__head h2 {
     font-size: var(--step-2);
   }
 
-  .section__hint {
-    color: var(--color-muted);
-  }
-
-  .works-grid {
+  .prod-grid {
     display: grid;
-    gap: var(--space-5) var(--space-3);
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+    gap: var(--space-4) var(--space-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
   }
-
   .stack {
     display: grid;
     gap: var(--space-5);
+  }
+
+  .cta {
+    margin-block: var(--space-4) var(--space-5);
+    padding: clamp(2rem, 6vw, 4rem);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    text-align: center;
+  }
+  .cta__title {
+    font-size: var(--step-2);
+  }
+  .cta__text {
+    margin-block: var(--space-1) var(--space-3);
+    color: var(--color-ink-soft);
   }
 </style>

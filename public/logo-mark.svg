@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Centioni Produzioni">
+  <circle cx="55" cy="63" r="35" fill="none" stroke="#176B7A" stroke-width="15"
+          stroke-linecap="round" stroke-dasharray="158 62" transform="rotate(-52 55 63)"/>
+  <line x1="50" y1="68" x2="78" y2="40" stroke="#176B7A" stroke-width="15" stroke-linecap="round"/>
+  <path d="M95 23 L90 54 L63 27 Z" fill="#176B7A" stroke="#176B7A" stroke-width="4" stroke-linejoin="round"/>
+</svg>

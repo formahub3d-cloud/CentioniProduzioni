@@ -7,7 +7,7 @@ import FormattedDate from '../../components/FormattedDate.astro';
 import { SITE } from '../../data/site.ts';
 
 export const getStaticPaths = (async () => {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const posts = await getCollection('news', ({ data }) => !data.draft);
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post },
@@ -28,7 +28,7 @@ const jsonLd = {
   author: { '@type': 'Organization', name: SITE.author },
   publisher: { '@type': 'Organization', name: SITE.name },
   keywords: tags.join(', '),
-  url: new URL(`/blog/${post.id}`, SITE.url).href,
+  url: new URL(`/news/${post.id}`, SITE.url).href,
   ...(ogImage ? { image: new URL(ogImage, SITE.url).href } : {}),
 };
 ---
@@ -51,7 +51,7 @@ const jsonLd = {
         )}
       </div>
       <h1 class="reveal reveal-lines"><span class="line"><span>{title}</span></span></h1>
-      <p class="post__excerpt reveal">{excerpt}</p>
+      <p class="post__excerpt reveal" style="--i: 1">{excerpt}</p>
     </header>
 
     {
@@ -59,7 +59,7 @@ const jsonLd = {
         <div class="wrap post__cover reveal media-reveal">
           <Image
             src={cover}
-            alt={`Copertina dell'articolo ${title}`}
+            alt={`Copertina: ${title}`}
             widths={[600, 1000, 1600]}
             sizes="(min-width: 68rem) 68rem, 100vw"
             loading="eager"
@@ -73,7 +73,7 @@ const jsonLd = {
     </div>
 
     <div class="wrap post__back">
-      <a href="/blog" class="link-arrow"><span aria-hidden="true">←</span> Tutti gli articoli</a>
+      <a href="/news" class="link-arrow"><span aria-hidden="true">←</span> Tutte le news</a>
     </div>
   </article>
 </BaseLayout>
@@ -112,7 +112,6 @@ const jsonLd = {
   .post__cover :global(img) {
     width: 100%;
     border-radius: var(--radius);
-    filter: grayscale(1);
   }
   .post__back {
     margin-top: var(--space-5);

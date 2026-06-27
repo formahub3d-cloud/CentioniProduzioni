@@ -1,10 +1,8 @@
 /**
  * Site-wide configuration — single source of truth.
  *
- * Edit these values to change the metadata used across the whole site
- * (SEO tags, sitemap, JSON-LD, header/footer). The visual design
- * (palette, fonts, atmosphere) lives in `src/styles/global.css` design
- * tokens — this file is content/metadata only.
+ * Metadata + navigation only. The visual design (palette, fonts, motion)
+ * lives in `src/styles/global.css` design tokens.
  */
 export const SITE = {
   /** Canonical production URL. Updated when the real domain is connected (Fase 3). */
@@ -12,28 +10,48 @@ export const SITE = {
   /** Short site / brand name. */
   name: 'Centioni Produzioni',
   /** Default <title> suffix and OG site name. */
-  title: 'Centioni Produzioni — Produzioni video & racconti',
-  /** Default meta description (used when a page provides none). */
+  title: 'Centioni Produzioni',
+  /** Default meta description / homepage subtitle. */
   description:
-    'Centioni Produzioni: produzioni video, lavori e racconti dietro le quinte.',
-  /** Author / brand behind the site — used in JSON-LD. */
+    'Il canale ufficiale dei contenuti video, dei progetti e delle novità di Niccolò Centioni.',
+  /** Brand / organization behind the site. */
   author: 'Centioni Produzioni',
+  /** The person behind the brand — used in JSON-LD. */
+  person: 'Niccolò Centioni',
   /** Default Open Graph locale. */
   locale: 'it_IT',
   /** Language attribute for <html>. */
   lang: 'it',
+  /** Contact email shown on the Contatti page / footer. */
+  email: 'info@centioniproduzioni.it',
 } as const;
 
-/** Primary navigation — order matters. Three destinations: works (home anchor),
- *  the about page and the blog. */
+/**
+ * Contact form endpoint.
+ * Uses Web3Forms (https://web3forms.com) — works on a fully static site with
+ * just a free access key, no backend. Replace the access key in Fase 3.
+ */
+export const CONTACT = {
+  endpoint: 'https://api.web3forms.com/submit',
+  // TODO (Fase 3): incollare qui la access key gratuita di Web3Forms.
+  accessKey: 'REPLACE_WITH_WEB3FORMS_ACCESS_KEY',
+} as const;
+
+/** Primary navigation — order matters. */
 export const NAV: { label: string; href: string }[] = [
-  { label: 'Lavori', href: '/#lavori' },
-  { label: 'Chi siamo', href: '/chi-siamo' },
-  { label: 'Blog', href: '/blog' },
+  { label: 'Home', href: '/' },
+  { label: 'Produzioni Video', href: '/produzioni' },
+  { label: 'News', href: '/news' },
+  { label: 'Chi Siamo', href: '/chi-siamo' },
+  { label: 'Contatti', href: '/contatti' },
 ];
 
-/** Social / external links shown in the footer. Add or remove freely. */
+/**
+ * Social / external links (footer + Contatti).
+ * Sostituire gli # con gli URL reali dei canali ufficiali.
+ */
 export const SOCIAL: { label: string; href: string }[] = [
-  // { label: 'Instagram', href: 'https://instagram.com/…' },
-  // { label: 'Vimeo', href: 'https://vimeo.com/…' },
+  { label: 'YouTube', href: '#' },
+  { label: 'Instagram', href: '#' },
+  { label: 'TikTok', href: '#' },
 ];

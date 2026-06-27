@@ -4,7 +4,7 @@ import type { CollectionEntry } from 'astro:content';
 import FormattedDate from './FormattedDate.astro';
 
 interface Props {
-  post: CollectionEntry<'blog'>;
+  post: CollectionEntry<'news'>;
 }
 
 const { post } = Astro.props;
@@ -12,7 +12,7 @@ const { title, date, cover, excerpt, tags } = post.data;
 ---
 
 <article class="post-card reveal">
-  <a href={`/blog/${post.id}`} class="post-card__link">
+  <a href={`/news/${post.id}`} class="post-card__link">
     {
       cover && (
         <div class="post-card__media wipe">
@@ -64,13 +64,11 @@ const { title, date, cover, excerpt, tags } = post.data;
     width: 100%;
     height: 100%;
     object-fit: cover;
-    filter: grayscale(1);
-    transition: transform 0.6s var(--ease), filter 0.5s var(--ease);
+    transition: transform 0.6s var(--ease);
   }
 
   .post-card:hover .post-card__media :global(img) {
     transform: scale(1.04);
-    filter: grayscale(1) contrast(1.06);
   }
 
   .post-card__meta {

@@ -1,0 +1,114 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  id: string;
+  title: string;
+  poster?: ImageMetadata;
+}
+
+const { id, title, poster } = Astro.props;
+---
+
+<div class="lyt" data-id={id}>
+  <button class="lyt__btn" type="button" aria-label={`Riproduci il video: ${title}`}>
+    {
+      poster && (
+        <Image
+          src={poster}
+          alt=""
+          widths={[600, 1000, 1280]}
+          sizes="(min-width: 60rem) 60rem, 100vw"
+          loading="lazy"
+        />
+      )
+    }
+    <span class="lyt__play" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"
+        ><path d="M8 5v14l11-7z"></path></svg
+      >
+    </span>
+  </button>
+</div>
+
+<script>
+  function initLite() {
+    document
+      .querySelectorAll<HTMLElement>('.lyt:not([data-ready])')
+      .forEach((el) => {
+        el.dataset.ready = 'true';
+        const btn = el.querySelector('.lyt__btn');
+        btn?.addEventListener(
+          'click',
+          () => {
+            const id = el.dataset.id;
+            const iframe = document.createElement('iframe');
+            iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
+            iframe.title = 'YouTube';
+            iframe.loading = 'lazy';
+            iframe.allow =
+              'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+            iframe.allowFullscreen = true;
+            el.replaceChildren(iframe);
+          },
+          { once: true },
+        );
+      });
+  }
+  document.addEventListener('astro:page-load', initLite);
+</script>
+
+<style>
+  .lyt {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--color-ink);
+  }
+  .lyt :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  .lyt__btn {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 0;
+    cursor: pointer;
+    background: none;
+    display: grid;
+    place-items: center;
+  }
+  .lyt__btn :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .lyt__play {
+    position: relative;
+    width: 4.6rem;
+    height: 4.6rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #fff;
+    background: color-mix(in srgb, var(--color-accent) 90%, transparent);
+    transition: transform 0.3s var(--ease), background 0.3s var(--ease);
+  }
+  .lyt__play svg {
+    transform: translateX(2px);
+  }
+  .lyt__btn:hover .lyt__play {
+    transform: scale(1.08);
+    background: var(--color-accent);
+  }
+</style>

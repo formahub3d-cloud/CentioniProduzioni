@@ -1,0 +1,239 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE, SOCIAL, CONTACT } from '../data/site.ts';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  name: 'Contatti',
+  url: new URL('/contatti', SITE.url).href,
+  about: { '@type': 'Organization', name: SITE.name, email: SITE.email },
+};
+---
+
+<BaseLayout
+  title="Contatti"
+  description="Per info, collaborazioni o proposte commerciali: scrivici."
+  jsonLd={jsonLd}
+>
+  <section class="wrap page-head">
+    <p class="eyebrow reveal">Contatti</p>
+    <h1 class="reveal reveal-lines"><span class="line"><span>Scrivici</span></span></h1>
+    <p class="page-head__lead reveal" style="--i: 1">
+      Per info, collaborazioni o proposte commerciali, compila il modulo o
+      seguici sui nostri canali social ufficiali.
+    </p>
+  </section>
+
+  <section class="wrap contact">
+    <form id="contact-form" class="form reveal" method="POST" action={CONTACT.endpoint}>
+      <input type="hidden" name="access_key" value={CONTACT.accessKey} />
+      <input type="hidden" name="from_name" value={SITE.name} />
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" />
+
+      <div class="form__row">
+        <label class="field">
+          <span>Nome</span>
+          <input type="text" name="name" required autocomplete="name" />
+        </label>
+        <label class="field">
+          <span>Email</span>
+          <input type="email" name="email" required autocomplete="email" />
+        </label>
+      </div>
+      <label class="field">
+        <span>Oggetto</span>
+        <input type="text" name="subject" required />
+      </label>
+      <label class="field">
+        <span>Messaggio</span>
+        <textarea name="message" rows="6" required></textarea>
+      </label>
+
+      <button type="submit" class="btn form__submit">Invia</button>
+      <p class="form__status" role="status" aria-live="polite"></p>
+    </form>
+
+    <aside class="contact__aside reveal">
+      <div class="contact__block">
+        <h2>Diretto</h2>
+        <p>
+          <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+        </p>
+      </div>
+      <div class="contact__block">
+        <h2>Seguici</h2>
+        <ul class="contact__social">
+          {
+            SOCIAL.map((s) => (
+              <li>
+                <a href={s.href} target="_blank" rel="me noopener">
+                  {s.label} <span aria-hidden="true">↗</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </aside>
+  </section>
+</BaseLayout>
+
+<script>
+  function initContact() {
+    const form = document.querySelector<HTMLFormElement>('#contact-form');
+    if (!form || form.dataset.ready) return;
+    form.dataset.ready = 'true';
+    const status = form.querySelector<HTMLElement>('.form__status');
+    const btn = form.querySelector<HTMLButtonElement>('.form__submit');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!status || !btn) return;
+      status.textContent = 'Invio in corso…';
+      status.className = 'form__status';
+      btn.disabled = true;
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: new FormData(form),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.success) {
+          form.reset();
+          status.textContent = 'Grazie! Messaggio inviato. Ti rispondiamo presto.';
+          status.classList.add('is-ok');
+        } else {
+          throw new Error(data.message || 'Errore');
+        }
+      } catch {
+        status.textContent =
+          'Invio non riuscito. Riprova o scrivici via email.';
+        status.classList.add('is-err');
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+  document.addEventListener('astro:page-load', initContact);
+</script>
+
+<style>
+  .page-head {
+    padding-block: clamp(2.5rem, 6vw, 5rem) var(--space-3);
+  }
+  .page-head h1 {
+    font-size: var(--step-3);
+    margin-top: var(--space-1);
+  }
+  .page-head__lead {
+    margin-top: var(--space-2);
+    color: var(--color-ink-soft);
+    max-width: var(--measure);
+    font-size: var(--step-1);
+  }
+
+  .contact {
+    display: grid;
+    gap: var(--space-5);
+    padding-bottom: var(--space-5);
+  }
+  @media (min-width: 52rem) {
+    .contact {
+      grid-template-columns: 3fr 2fr;
+      gap: var(--space-6);
+    }
+  }
+
+  .form {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .form__row {
+    display: grid;
+    gap: var(--space-2);
+  }
+  @media (min-width: 32rem) {
+    .form__row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .field {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .field span {
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+  }
+  .field input,
+  .field textarea {
+    font: inherit;
+    color: var(--color-ink);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    padding: 0.7em 0.85em;
+    width: 100%;
+  }
+  .field input:focus-visible,
+  .field textarea:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
+    border-color: var(--color-accent);
+  }
+  .field textarea {
+    resize: vertical;
+  }
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+  .form__submit {
+    justify-self: start;
+    margin-top: var(--space-1);
+  }
+  .form__status {
+    font-size: var(--step--1);
+    min-height: 1.2em;
+    color: var(--color-ink-soft);
+  }
+  .form__status.is-ok {
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+  .form__status.is-err {
+    color: #a23b2c;
+    font-weight: 600;
+  }
+
+  .contact__block + .contact__block {
+    margin-top: var(--space-4);
+  }
+  .contact__block h2 {
+    font-size: var(--step-1);
+    margin-bottom: var(--space-1);
+  }
+  .contact__social {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.5rem;
+  }
+  .contact__social a {
+    text-decoration: none;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .contact__social a:hover {
+    color: var(--color-accent);
+  }
+</style>

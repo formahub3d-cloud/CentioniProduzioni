@@ -1,0 +1,154 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  produzione: CollectionEntry<'produzioni'>;
+  eager?: boolean;
+  index?: number;
+}
+
+const { produzione, eager = false, index = 0 } = Astro.props;
+const { title, cover, status, releaseLabel, description } = produzione.data;
+const inCorso = status === 'in-corso';
+const badge = inCorso ? 'In corso' : 'Coming Soon';
+
+// In corso → link alla pagina produzioni (dove c'è l'embed). In uscita → statico.
+const Tag = inCorso ? 'a' : 'div';
+const href = inCorso ? `/produzioni#${produzione.id}` : undefined;
+---
+
+<Tag
+  class:list={['prod reveal', { 'prod--soon': !inCorso }]}
+  style={`--i: ${index}`}
+  href={href}
+>
+  <figure class="prod__media wipe">
+    {
+      cover && (
+        <Image
+          src={cover}
+          alt={`${title} — copertina`}
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 56rem) 33vw, (min-width: 36rem) 50vw, 100vw"
+          loading={eager ? 'eager' : 'lazy'}
+        />
+      )
+    }
+    <span class:list={['prod__badge', { 'prod__badge--live': inCorso }]}>{badge}</span>
+    {
+      inCorso && (
+        <span class="prod__play" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        </span>
+      )
+    }
+  </figure>
+  <div class="prod__body">
+    <h3 class="prod__title">{title}</h3>
+    {releaseLabel && <p class="prod__meta">{releaseLabel}</p>}
+    {description && <p class="prod__desc">{description}</p>}
+  </div>
+</Tag>
+
+<style>
+  .prod {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+  }
+  .prod__media {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--color-ink);
+    aspect-ratio: 16 / 9;
+    margin: 0;
+  }
+  .prod__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s var(--ease);
+  }
+  a.prod:hover .prod__media :global(img),
+  a.prod:focus-visible .prod__media :global(img) {
+    transform: scale(1.05);
+  }
+  .prod--soon .prod__media :global(img) {
+    filter: saturate(0.8) brightness(0.82);
+  }
+
+  .prod__badge {
+    position: absolute;
+    top: 0.8rem;
+    left: 0.8rem;
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.35em 0.7em;
+    border-radius: 100px;
+    background: color-mix(in srgb, var(--color-ink) 70%, transparent);
+    color: #fff;
+    backdrop-filter: blur(4px);
+  }
+  .prod__badge--live {
+    background: var(--color-accent);
+  }
+
+  .prod__play {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 3.4rem;
+    height: 3.4rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #fff;
+    background: color-mix(in srgb, var(--color-accent) 88%, transparent);
+    transform: scale(0.85);
+    opacity: 0;
+    transition: opacity 0.35s var(--ease), transform 0.35s var(--ease);
+  }
+  .prod__play svg {
+    transform: translateX(1px);
+  }
+  a.prod:hover .prod__play,
+  a.prod:focus-visible .prod__play {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .prod__body {
+    margin-top: var(--space-2);
+  }
+  .prod__title {
+    font-size: var(--step-1);
+  }
+  .prod__meta {
+    margin-top: 0.2rem;
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .prod__desc {
+    margin-top: 0.4rem;
+    color: var(--color-ink-soft);
+    font-size: var(--step--1);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .prod__play {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

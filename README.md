@@ -1,131 +1,122 @@
-# Centioni Produzioni — Portfolio & Blog
+# Centioni Produzioni — Sito ufficiale
 
-Sito portfolio + blog costruito con **Astro** (output statico), micro-animazioni
-CSS-first e CMS git-based (**Sveltia CMS**, dalla Fase 2). Ottimizzato per
-performance e SEO/GEO.
-
-> Stato: **Fase 1 completata + design su misura applicato.** Struttura a 3
-> pagine (Home, Chi siamo, Blog), content collections, SEO/GEO, contenuti di
-> esempio. Design editoriale monocromatico (font display **Fraunces** + **Inter**
-> per UI), ispirato all'atmosfera del riferimento ma originale. I **due testi**
-> del cliente verranno inseriti nelle aree segnaposto (Hero e Chi siamo).
+Sito di **Centioni Produzioni** (Niccolò Centioni): produzioni video, news e
+contatti. Costruito con **Astro** (output statico), micro-animazioni CSS-first
+e CMS git-based (**Sveltia CMS**, dalla Fase 2). Ottimizzato per performance e
+SEO/GEO.
 
 ## Comandi
 
 ```bash
-npm install        # installa le dipendenze
-npm run dev        # server di sviluppo su http://localhost:4321
+npm install        # dipendenze
+npm run dev        # sviluppo su http://localhost:4321
 npm run build      # type-check + build statica in dist/
 npm run preview    # anteprima della build
 ```
+
+## Pagine
+
+- **Home** (`/`) — hero, slider dei momenti salienti, anteprima Produzioni e News.
+- **Produzioni Video** (`/produzioni`) — "Progetti in corso" (con embed YouTube
+  click-to-load) e "In uscita" (card Coming Soon).
+- **News** (`/news`) — griglia articoli; ogni articolo ha la sua pagina
+  (`/news/<slug>`).
+- **Chi Siamo** (`/chi-siamo`) — la storia di Niccolò Centioni.
+- **Contatti** (`/contatti`) — form di contatto + canali social.
 
 ## Struttura
 
 ```
 src/
   content/
-    blog/            # articoli in Markdown
-    works/           # "lavori": copertine che linkano a video esterni
+    news/            # articoli News (Markdown)
+    produzioni/      # produzioni video (Markdown)
   content.config.ts  # schema delle due collection (fonte di verità)
   assets/media/      # ⟵ CARTELLA MEDIA UNICA (vedi sotto)
-  components/        # componenti UI (.astro)
-  layouts/           # layout di base
-  pages/             # rotte del sito (index, chi-siamo, blog/)
+  components/        # UI (.astro): Logo, Header, Footer, Slider, Marquee,
+                     #   LiteYouTube, ProduzioneCard, PostCard, SEO…
+  layouts/BaseLayout.astro
+  pages/             # rotte
   styles/global.css  # design tokens + stili globali
-  data/site.ts       # metadati del sito (nome, URL, nav, social)
+  data/site.ts       # metadati, navigazione, social, endpoint contatti
 public/
   fonts/             # font self-hosted (woff2): Fraunces + Inter
   favicon.svg
-  admin/             # Sveltia CMS (aggiunto in Fase 2)
+  logo-mark.svg      # logo (solo simbolo)
+  logo-full.svg      # logo completo (simbolo + wordmark + payoff)
+  admin/             # Sveltia CMS (Fase 2)
 ```
 
-## Pagine
+## Logo
 
-- **Home** (`/`) — hero, sezione **Lavori** (`#lavori`: griglia di copertine che
-  aprono un video esterno in una nuova scheda) e anteprime del **blog**.
-- **Chi siamo** (`/chi-siamo`) — presentazione + contatti.
-- **Blog** (`/blog`) — lista articoli; ogni articolo ha la sua pagina
-  (`/blog/<slug>`).
+Il logo è ricreato in **SVG vettoriale** (originale):
+
+- `src/components/Logo.astro` — il **simbolo** inline (usa `currentColor`, scala
+  a qualsiasi dimensione). Usato in header e footer.
+- `public/logo-mark.svg` — simbolo a colori (per usi esterni / Open Graph).
+- `public/logo-full.svg` — lockup completo (simbolo + CENTIONI PRODUZIONI +
+  "VIDEO • SOCIAL • BLOG • NEWS").
+- `public/favicon.svg` — favicon (simbolo su fondo teal arrotondato).
 
 ## Immagini — cartella media unica
 
-Tutte le immagini vivono in **una sola cartella condivisa**, committata su Git:
+Tutte le immagini in **una sola cartella** committata su Git:
+`src/assets/media/`. Usata sia per le immagini caricate a mano sia da quelle
+caricate via CMS (Sveltia userà la stessa cartella). Astro le ottimizza
+(formati moderni, dimensioni responsive).
 
-```
-src/assets/media/
-```
-
-Questa cartella è usata sia per le immagini caricate **a mano**, sia per quelle
-caricate dagli editor **via CMS** (Sveltia userà la stessa cartella). Una sola
-fonte, nessuna cartella doppia.
-
-### Come referenziare un'immagine
-
-**Nei campi `cover` dei contenuti** (frontmatter Markdown), usa il percorso
-**relativo al file** Markdown. Poiché i contenuti stanno in
-`src/content/<collezione>/`, il percorso è sempre:
+Nei campi `cover` (frontmatter), il percorso è relativo al file Markdown — i
+contenuti stanno in `src/content/<collezione>/`, quindi:
 
 ```yaml
 cover: '../../assets/media/nome-file.jpg'
 ```
 
-Astro ottimizza automaticamente queste immagini (formati moderni, dimensioni
-responsive) tramite il componente `<Image>`. Dal CMS questo percorso viene
-scritto automaticamente (vedi `public_folder` nella config di Sveltia, Fase 2).
-
-**Dentro il corpo Markdown** puoi usare la sintassi standard:
-
-```md
-![Didascalia](../../assets/media/nome-file.jpg)
-```
-
-### Formati consigliati
-
-- Carica immagini grandi (lato lungo ≥ 1600px): Astro genera le versioni più
-  piccole. Preferisci `.jpg`/`.png`; Astro le converte in formati moderni.
+> Le immagini attuali sono **placeholder** (gradienti). Sostituiscile con foto
+> e copertine reali mantenendo lo stesso nome file (o aggiornando il percorso).
 
 ## Content collections
 
-Definite in `src/content.config.ts` — questa è la **fonte di verità** dei campi.
-La config del CMS (Fase 2) rispecchia esattamente questi campi.
+Definite in `src/content.config.ts` (fonte di verità rispecchiata dal CMS).
 
-**`blog`** — `title`, `date`, `cover` (opz.), `excerpt`, `tags[]`, `draft`, corpo.
-**`works`** — `title`, `cover`, `video` (URL esterno), `role` (opz.),
-`year` (opz.), `order`, `draft`. Non hanno una pagina interna: la copertina
-linka direttamente al `video`.
+**`news`** — `title`, `date`, `cover` (opz.), `excerpt`, `tags[]`, `draft`, corpo.
+**`produzioni`** — `title`, `status` (`in-corso` | `in-uscita`), `cover` (opz.),
+`youtube` (ID video, opz.), `video` (URL esterno, opz.), `releaseLabel` (opz.),
+`description` (opz.), `order`, `draft`.
 
-I contenuti con `draft: true` non vengono pubblicati né inseriti in sitemap.
+`status: in-corso` mostra l'embed YouTube; `in-uscita` mostra la card
+"Coming Soon" con l'etichetta di uscita. I contenuti `draft: true` non vengono
+pubblicati né messi in sitemap.
 
-## SEO / GEO
+### Embed YouTube
 
-- Meta `title`/`description` per pagina + Open Graph e Twitter card
-- `sitemap-index.xml` generata (esclude `/admin`)
-- `robots.txt` dinamico con riferimento alla sitemap
-- JSON-LD: `Article` sugli articoli, `CreativeWork` sui progetti
-- Feed RSS del blog su `/rss.xml`
+Inserisci l'**ID** del video nel campo `youtube` (es. da
+`youtube.com/watch?v=XXXX` → `XXXX`). Il player è **click-to-load** (carica
+l'iframe solo al click) per non penalizzare le performance.
 
-## Performance
+## Form contatti
 
-- Zero JavaScript non necessario (solo un piccolo script di scroll-reveal)
-- Font self-hosted in `public/fonts` con `preload`
-- View Transitions native di Astro per le transizioni di pagina
-- `prefers-reduced-motion` rispettato ovunque
+Il form usa **Web3Forms** (`src/data/site.ts` → `CONTACT`), che funziona su sito
+statico con una semplice access key gratuita. Vedi `DEPLOY.md` per ottenerla e
+configurarla.
 
 ## Design
 
-Editoriale e **monocromatico**: paper caldo off-white, inchiostro quasi nero,
-tanto spazio bianco, ritmo tipografico forte. Font display **Fraunces**
-(serif variabile, self-hosted) per i titoli + **Inter** per UI e testo.
-Ispirato all'atmosfera del sito di riferimento ma interamente originale
-(nessun codice/testo/immagine copiati).
+Palette **brand** (dal logo): petrol/teal su panna caldo. Font display
+**Fraunces** (serif variabile) per i titoli + **Inter** per UI/testo, entrambi
+self-hosted con preload. Tutto è guidato dai **design token** in
+`src/styles/global.css` (`:root`): per ri-skinnare basta modificare quei token.
 
-Il look è guidato dai **design token** in `src/styles/global.css` (`:root`):
-palette, scala tipografica, spaziature, motion. Per ri-skinnare basta
-modificare quei token — i componenti non usano colori/font hard-coded.
-Il nome del sito, la nav e i social stanno in `src/data/site.ts`.
+Animazioni leggere e CSS-first (reveal dei titoli riga-per-riga, scroll-reveal,
+wipe sulle copertine, marquee, slider, View Transitions). Tutto rispetta
+`prefers-reduced-motion`.
 
-### Dove vanno i due testi del cliente
+## SEO / GEO
 
-- **Hero (home):** `src/pages/index.astro` — paragrafo marcato come
-  `Testo provvisorio`.
-- **Chi siamo:** `src/pages/chi-siamo.astro` — blocco marcato `TESTO PROVVISORIO`.
+Meta + Open Graph per pagina, `sitemap-index.xml`, `robots.txt`, JSON-LD
+(Article sulle news, AboutPage/ContactPage), feed RSS su `/rss.xml`.
+
+## Deploy & dominio
+
+Vedi **`DEPLOY.md`** per la guida passo-passo (Cloudflare Pages, dominio
+Register.it, form contatti, CMS auth).

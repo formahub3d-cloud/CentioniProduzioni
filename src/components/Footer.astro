@@ -1,13 +1,20 @@
 ---
 import { SOCIAL, SITE, NAV } from '../data/site.ts';
+import Logo from './Logo.astro';
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
   <div class="wrap site-footer__inner">
     <div>
-      <p class="site-footer__brand">{SITE.name}</p>
+      <p class="site-footer__brand">
+        <span class="site-footer__mark"><Logo size={28} /></span>
+        {SITE.name}
+      </p>
       <p class="site-footer__tag">{SITE.description}</p>
+      <p class="site-footer__mail">
+        <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+      </p>
     </div>
 
     <nav aria-label="Footer">
@@ -56,8 +63,23 @@ const year = new Date().getFullYear();
   }
 
   .site-footer__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     font-weight: 700;
     font-size: var(--step-1);
+  }
+  .site-footer__mark {
+    color: var(--color-accent);
+    display: inline-flex;
+  }
+  .site-footer__mail {
+    margin-top: 0.4rem;
+    font-size: var(--step--1);
+  }
+  .site-footer__mail a {
+    color: var(--color-accent);
+    text-decoration: none;
   }
 
   .site-footer__tag {

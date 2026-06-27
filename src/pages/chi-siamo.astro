@@ -5,51 +5,63 @@ import { SITE } from '../data/site.ts';
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'AboutPage',
-  name: 'Chi siamo',
+  name: 'Chi Siamo',
   url: new URL('/chi-siamo', SITE.url).href,
-  about: { '@type': 'Organization', name: SITE.name },
+  about: {
+    '@type': 'Person',
+    name: SITE.person,
+    worksFor: { '@type': 'Organization', name: SITE.name },
+  },
 };
 ---
 
 <BaseLayout
-  title="Chi siamo"
-  description="Chi siamo, come lavoriamo e come metterti in contatto con noi."
+  title="Chi Siamo"
+  description="La storia di Niccolò Centioni e la nascita di Centioni Produzioni."
   jsonLd={jsonLd}
 >
   <section class="wrap page-head">
-    <p class="eyebrow reveal">Chi siamo</p>
+    <p class="eyebrow reveal">Chi Siamo</p>
     <h1 class="reveal reveal-lines">
-      <span class="line"><span>La storia</span></span>
-      <span class="line"><span>dietro le produzioni</span></span>
+      <span class="line"><span>La storia di</span></span>
+      <span class="line"><span>Niccolò Centioni</span></span>
     </h1>
   </section>
 
   <section class="wrap about">
     <div class="about__body flow">
-      {/* TESTO PROVVISORIO — verrà sostituito con il testo definitivo del cliente. */}
       <p class="about__lead reveal">
-        Siamo {SITE.name}: diamo forma a idee e racconti attraverso il video,
-        dall'ideazione alla regia, fino al montaggio.
+        Dalle prime esperienze nel mondo dello spettacolo fino ai successi
+        televisivi che lo hanno reso un volto amato dal pubblico.
       </p>
       <p class="reveal">
-        Questo è un testo segnaposto. Lo sostituiremo con la presentazione
-        reale — chi siamo, come lavoriamo e cosa ci muove — non appena
-        riceveremo i contenuti definitivi.
+        Questa sezione racconta il percorso artistico e professionale di Niccolò
+        Centioni: la sua evoluzione, umana e lavorativa, attraverso gli anni
+        passati davanti e dietro la macchina da presa.
       </p>
       <p class="reveal">
-        Ogni progetto nasce da una collaborazione stretta con il cliente: ascolto,
-        idea, produzione. Il risultato è un racconto su misura.
+        Un cammino che arriva fino a oggi, con la nascita di
+        <strong>Centioni Produzioni</strong>: la nuova realtà con cui Niccolò
+        firma e realizza i suoi contenuti video, i suoi format per i social e i
+        suoi nuovi progetti digitali.
+      </p>
+      <p class="reveal">
+        È da qui che prendono vita i progetti — da <em>Centioni's Kitchen</em>
+        ai nuovi format in arrivo: un unico spazio dove ideare, produrre e
+        raccontare.
       </p>
     </div>
 
-    <aside class="about__contact reveal">
-      <h2>Contatti</h2>
-      <p>Per collaborazioni e preventivi:</p>
-      <p>
-        <a href="mailto:hello@centioniproduzioni.it" class="about__email"
-          >hello@centioniproduzioni.it</a
-        >
-      </p>
+    <aside class="about__aside reveal">
+      <div class="about__card">
+        <p class="about__cardlabel">In breve</p>
+        <ul class="about__facts">
+          <li><span>Brand</span>{SITE.name}</li>
+          <li><span>Volto</span>{SITE.person}</li>
+          <li><span>Ambiti</span>Video · Social · Blog · News</li>
+        </ul>
+        <a href="/contatti" class="btn">Lavoriamo insieme</a>
+      </div>
     </aside>
   </section>
 </BaseLayout>
@@ -65,7 +77,7 @@ const jsonLd = {
   .about {
     display: grid;
     gap: var(--space-5);
-    padding-bottom: var(--space-4);
+    padding-bottom: var(--space-5);
   }
   @media (min-width: 52rem) {
     .about {
@@ -85,16 +97,40 @@ const jsonLd = {
   .about__body p:not(.about__lead) {
     color: var(--color-ink-soft);
   }
-  .about__contact h2 {
-    font-size: var(--step-1);
-    margin-bottom: var(--space-1);
+  .about__card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    padding: var(--space-3);
   }
-  .about__contact p {
-    color: var(--color-ink-soft);
+  .about__cardlabel {
+    font-family: var(--font-sans);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: var(--step--1);
+    font-weight: 600;
+    color: var(--color-accent);
   }
-  .about__email {
-    font-family: var(--font-display);
-    font-size: var(--step-1);
-    color: var(--color-ink);
+  .about__facts {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-2) 0 var(--space-3);
+    display: grid;
+    gap: 0.6rem;
+  }
+  .about__facts li {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
+    gap: 0.5rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--color-line);
+    font-size: var(--step-0);
+  }
+  .about__facts span {
+    color: var(--color-muted);
+    font-size: var(--step--1);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    align-self: center;
   }
 </style>

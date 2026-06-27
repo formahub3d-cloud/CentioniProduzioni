@@ -1,0 +1,120 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LiteYouTube from '../../components/LiteYouTube.astro';
+import ProduzioneCard from '../../components/ProduzioneCard.astro';
+
+const all = (await getCollection('produzioni', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const inCorso = all.filter((p) => p.data.status === 'in-corso');
+const inUscita = all.filter((p) => p.data.status === 'in-uscita');
+---
+
+<BaseLayout
+  title="Produzioni Video"
+  description="Le produzioni video di Centioni Produzioni: progetti in corso e in uscita."
+>
+  <section class="wrap page-head">
+    <p class="eyebrow reveal">Produzioni Video</p>
+    <h1 class="reveal reveal-lines">
+      <span class="line"><span>Le Nostre Produzioni</span></span>
+    </h1>
+  </section>
+
+  {
+    inCorso.length > 0 && (
+      <section class="wrap section">
+        <h2 class="sub reveal">Progetti in corso</h2>
+        <div class="features">
+          {inCorso.map((p) => (
+            <article id={p.id} class="feature reveal">
+              <div class="feature__head">
+                <h3 class="feature__title">{p.data.title}</h3>
+                <span class="feature__badge">In corso</span>
+              </div>
+              {p.data.youtube ? (
+                <LiteYouTube id={p.data.youtube} title={p.data.title} poster={p.data.cover} />
+              ) : p.data.video ? (
+                <a class="btn" href={p.data.video} target="_blank" rel="noopener">
+                  Guarda il video ↗
+                </a>
+              ) : null}
+              {p.data.description && <p class="feature__desc">{p.data.description}</p>}
+            </article>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    inUscita.length > 0 && (
+      <section class="wrap section">
+        <h2 class="sub reveal">In uscita · Agosto 2026</h2>
+        <div class="soon-grid">
+          {inUscita.map((p, i) => (
+            <ProduzioneCard produzione={p} index={i % 3} />
+          ))}
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding-block: clamp(2.5rem, 7vw, 5.5rem) var(--space-3);
+  }
+  .page-head h1 {
+    font-size: var(--step-3);
+    margin-top: var(--space-1);
+  }
+  .section {
+    padding-block: var(--space-3) var(--space-4);
+  }
+  .sub {
+    font-size: var(--step-2);
+    margin-bottom: var(--space-4);
+  }
+  .features {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .feature {
+    scroll-margin-top: 5.5rem;
+    max-width: 60rem;
+    margin-inline: auto;
+    width: 100%;
+  }
+  .feature__head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+  }
+  .feature__title {
+    font-size: var(--step-2);
+  }
+  .feature__badge {
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.35em 0.7em;
+    border-radius: 100px;
+    background: var(--color-accent);
+    color: #fff;
+  }
+  .feature__desc {
+    margin-top: var(--space-2);
+    color: var(--color-ink-soft);
+    max-width: var(--measure);
+  }
+  .soon-grid {
+    display: grid;
+    gap: var(--space-4) var(--space-3);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  }
+</style>
