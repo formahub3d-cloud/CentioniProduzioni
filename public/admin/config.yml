@@ -9,9 +9,8 @@
 backend:
   name: github
   repo: formahub3d-cloud/centioniproduzioni
-  # ⚠️ Imposta il branch di PRODUZIONE (quello pubblicato da Cloudflare Pages).
-  # Per ora è il branch di sviluppo; in Fase 3, dopo il merge, metti `main`.
-  branch: claude/niccolo-portfolio-blog-bhb076
+  # Branch di PRODUZIONE (quello pubblicato da Cloudflare Pages).
+  branch: main
   # --- Fase 3: login GitHub tramite Cloudflare Worker sveltia-cms-auth ---
   # Decommenta e inserisci l'URL del tuo Worker (vedi DEPLOY.md §5C):
   # base_url: https://centioni-cms-auth.<tuo-subdominio>.workers.dev
