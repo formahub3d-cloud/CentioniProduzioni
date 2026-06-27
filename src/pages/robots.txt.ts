@@ -1,0 +1,14 @@
+import type { APIRoute } from 'astro';
+import { SITE } from '../data/site.ts';
+
+const body = `User-agent: *
+Allow: /
+Disallow: /admin
+
+Sitemap: ${new URL('sitemap-index.xml', SITE.url).href}
+`;
+
+export const GET: APIRoute = () =>
+  new Response(body, {
+    headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+  });

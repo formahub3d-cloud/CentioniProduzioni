@@ -1,0 +1,112 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE } from '../../data/site.ts';
+
+export const getStaticPaths = (async () => {
+  const projects = await getCollection('projects', ({ data }) => !data.draft);
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }));
+}) satisfies GetStaticPaths;
+
+const { project } = Astro.props;
+const { title, cover, year, role, links, description } = project.data;
+const { Content } = await render(project);
+
+const ogImage = cover.src;
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: title,
+  abstract: description,
+  dateCreated: String(year),
+  creator: { '@type': 'Organization', name: SITE.author },
+  url: new URL(`/portfolio/${project.id}`, SITE.url).href,
+};
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  image={ogImage}
+  jsonLd={jsonLd}
+>
+  <article class="project">
+    <header class="wrap project__head">
+      <p class="eyebrow reveal">{role} · {year}</p>
+      <h1 class="reveal" style={`view-transition-name: project-${project.id}`}>
+        {title}
+      </h1>
+      <p class="project__desc reveal">{description}</p>
+      {
+        links.length > 0 && (
+          <ul class="project__links reveal">
+            {links.map((l) => (
+              <li>
+                <a class="btn btn--ghost" href={l.url} target="_blank" rel="noopener">
+                  {l.label} <span aria-hidden="true">↗</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+
+    <div class="wrap project__cover reveal">
+      <Image
+        src={cover}
+        alt={`Copertina del progetto ${title}`}
+        widths={[600, 1000, 1600]}
+        sizes="(min-width: 68rem) 68rem, 100vw"
+        loading="eager"
+      />
+    </div>
+
+    <div class="wrap prose flow">
+      <Content />
+    </div>
+
+    <div class="wrap project__back">
+      <a href="/portfolio" class="link-arrow"><span aria-hidden="true">←</span> Tutti i progetti</a>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .project__head {
+    padding-block: clamp(2.5rem, 6vw, 5rem) var(--space-3);
+    max-width: 52rem;
+  }
+  .project__head h1 {
+    font-size: var(--step-3);
+    margin-top: var(--space-1);
+  }
+  .project__desc {
+    margin-top: var(--space-2);
+    font-size: var(--step-1);
+    color: var(--color-ink-soft);
+  }
+  .project__links {
+    list-style: none;
+    padding: 0;
+    margin-top: var(--space-3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  .project__cover {
+    margin-block: var(--space-3) var(--space-5);
+  }
+  .project__cover :global(img) {
+    width: 100%;
+    border-radius: var(--radius);
+  }
+  .project__back {
+    margin-top: var(--space-5);
+  }
+</style>

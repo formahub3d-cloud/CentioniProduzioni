@@ -1,0 +1,53 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PostCard from '../../components/PostCard.astro';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+---
+
+<BaseLayout title="Blog" description="Articoli, racconti e note dietro le quinte.">
+  <section class="wrap page-head">
+    <p class="eyebrow reveal">Blog</p>
+    <h1 class="reveal">Articoli &amp; racconti</h1>
+    <p class="page-head__lead reveal">
+      Note, processi e idee dietro le produzioni.
+    </p>
+  </section>
+
+  <section class="wrap">
+    {
+      posts.length > 0 ? (
+        <div class="stack">
+          {posts.map((post) => (
+            <PostCard post={post} />
+          ))}
+        </div>
+      ) : (
+        <p>Nessun articolo pubblicato per ora.</p>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding-block: clamp(2.5rem, 6vw, 5rem) var(--space-4);
+  }
+  .page-head h1 {
+    font-size: var(--step-3);
+    margin-top: var(--space-1);
+  }
+  .page-head__lead {
+    margin-top: var(--space-2);
+    color: var(--color-ink-soft);
+    max-width: var(--measure);
+    font-size: var(--step-1);
+  }
+  .stack {
+    display: grid;
+    gap: var(--space-5);
+  }
+</style>
