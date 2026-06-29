@@ -13,7 +13,7 @@ backend:
   branch: main
   # --- Fase 3: login GitHub tramite Cloudflare Worker sveltia-cms-auth ---
   # Decommenta e inserisci l'URL del tuo Worker (vedi DEPLOY.md §5C):
-  # base_url: https://centioni-cms-auth.<tuo-subdominio>.workers.dev
+  base_url: https://sveltia-cms-auth.formahub3d.workers.dev
 
 # Per provare il CMS in locale con un proxy git (facoltativo):
 #   npx @sveltia/cms-proxy-server   →  poi imposta local_backend: true
