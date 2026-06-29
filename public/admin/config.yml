@@ -26,8 +26,8 @@ logo_url: /logo-mark.svg
 # --- Cartella media UNICA e condivisa (stessa del sito) ---
 # public_folder relativo: scrive nel frontmatter "../../assets/media/<file>",
 # il percorso che Astro si aspetta per l'ottimizzazione immagini.
-media_folder: "src/assets/media"
-public_folder: "../../assets/media"
+media_folder: "/src/assets/media"
+public_folder: "/src/assets/media"
 
 # Lingua dell'interfaccia
 locale: it
