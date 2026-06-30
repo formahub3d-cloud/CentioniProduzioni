@@ -1,0 +1,287 @@
+---
+// Pannello redazione su misura. Pagina statica autonoma (niente layout del sito).
+// Protetta da Cloudflare Access (login Google). Le API in /api/* committano su GitHub.
+export const prerender = true;
+---
+
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <title>Redazione — Centioni Produzioni</title>
+    <style>
+      :root {
+        --teal: #176b7a; --teal-deep: #0f5663; --bg: #f1eee6; --surface: #fff;
+        --ink: #15323a; --soft: #44595f; --muted: #6b756f; --line: #ddd7c9;
+        --ok: #2f8f6b; --err: #a23b2c;
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--bg); color: var(--ink);
+        font: 16px/1.55 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+      a { color: var(--teal); }
+      header { background: var(--teal); color: #fff; padding: .7rem 1.2rem;
+        display: flex; align-items: center; gap: 1rem; }
+      header h1 { font-size: 1.05rem; margin: 0; font-weight: 700; letter-spacing: .01em; }
+      header .who { margin-left: auto; font-size: .85rem; opacity: .95; }
+      header a.logout { color: #fff; font-size: .85rem; }
+      .wrap { max-width: 60rem; margin: 0 auto; padding: 1.2rem; }
+      .tabs { display: flex; gap: .5rem; margin-bottom: 1rem; }
+      .tab { padding: .5rem 1rem; border: 1px solid var(--line); background: var(--surface);
+        border-radius: 100px; cursor: pointer; font-weight: 600; font-size: .9rem; color: var(--soft); }
+      .tab.active { background: var(--teal); color: #fff; border-color: var(--teal); }
+      .cols { display: grid; gap: 1.2rem; grid-template-columns: 1fr; }
+      @media (min-width: 52rem) { .cols { grid-template-columns: 18rem 1fr; align-items: start; } }
+      .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 1rem; }
+      .list { display: grid; gap: .4rem; }
+      .list button { text-align: left; background: none; border: 1px solid var(--line); border-radius: 6px;
+        padding: .55rem .7rem; cursor: pointer; font: inherit; color: var(--ink); }
+      .list button:hover { border-color: var(--teal); }
+      .list .meta { font-size: .75rem; color: var(--muted); }
+      .list .draft { color: var(--err); font-weight: 600; }
+      .btn { background: var(--teal); color: #fff; border: 0; border-radius: 6px;
+        padding: .6rem 1.1rem; font: inherit; font-weight: 600; cursor: pointer; }
+      .btn:hover { background: var(--teal-deep); }
+      .btn--ghost { background: transparent; color: var(--teal); border: 1px solid var(--teal); }
+      .btn[disabled] { opacity: .5; cursor: default; }
+      .field { display: grid; gap: .3rem; margin-bottom: .9rem; }
+      .field label { font-size: .8rem; font-weight: 600; color: var(--soft); text-transform: uppercase; letter-spacing: .03em; }
+      .field input[type=text], .field input[type=date], .field input[type=number],
+      .field textarea, .field select { font: inherit; padding: .55rem .65rem; border: 1px solid var(--line);
+        border-radius: 6px; background: #fff; color: var(--ink); width: 100%; }
+      .field textarea { resize: vertical; min-height: 5rem; }
+      .field--body textarea { min-height: 14rem; font-family: ui-monospace, monospace; font-size: .92rem; }
+      .row { display: flex; align-items: center; gap: .5rem; }
+      .cover-prev { max-width: 100%; border-radius: 6px; margin-top: .4rem; border: 1px solid var(--line); }
+      .actions { display: flex; gap: .6rem; align-items: center; margin-top: .6rem; flex-wrap: wrap; }
+      .status { font-size: .9rem; min-height: 1.2em; }
+      .status.ok { color: var(--ok); font-weight: 600; }
+      .status.err { color: var(--err); font-weight: 600; }
+      .empty { color: var(--muted); font-size: .9rem; }
+      .gate { max-width: 32rem; margin: 4rem auto; text-align: center; padding: 1.5rem; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Redazione · Centioni Produzioni</h1>
+      <span class="who" id="who"></span>
+      <a class="logout" href="/cdn-cgi/access/logout">Esci</a>
+    </header>
+
+    <div class="wrap" id="app" hidden>
+      <div class="tabs">
+        <button class="tab active" data-type="news">Articoli</button>
+        <button class="tab" data-type="produzioni">Produzioni</button>
+      </div>
+      <div class="cols">
+        <div class="panel">
+          <button class="btn" id="newBtn" style="width:100%;margin-bottom:.8rem">+ Nuovo</button>
+          <div class="list" id="list"><p class="empty">Caricamento…</p></div>
+        </div>
+        <div class="panel">
+          <form id="form"><p class="empty">Seleziona un elemento o crea “Nuovo”.</p></form>
+        </div>
+      </div>
+    </div>
+
+    <div class="gate" id="gate">
+      <p>Verifica accesso…</p>
+    </div>
+
+    <script type="module" is:inline>
+      const SCHEMAS = {
+        news: {
+          label: 'Articolo',
+          fields: [
+            { name: 'title', label: 'Titolo', type: 'text', required: true },
+            { name: 'date', label: 'Data', type: 'date', required: true },
+            { name: 'cover', label: 'Copertina', type: 'image' },
+            { name: 'excerpt', label: 'Estratto', type: 'textarea', required: true },
+            { name: 'tags', label: 'Tag (separati da virgola)', type: 'text' },
+            { name: 'draft', label: 'Bozza (non pubblicato)', type: 'checkbox' },
+            { name: 'body', label: 'Contenuto (Markdown)', type: 'body' },
+          ],
+        },
+        produzioni: {
+          label: 'Produzione',
+          fields: [
+            { name: 'title', label: 'Titolo', type: 'text', required: true },
+            { name: 'status', label: 'Stato', type: 'select', required: true,
+              options: [['in-corso', 'In corso'], ['in-uscita', 'In uscita']] },
+            { name: 'cover', label: 'Copertina', type: 'image' },
+            { name: 'youtube', label: 'ID video YouTube', type: 'text' },
+            { name: 'video', label: 'Link video esterno (https://…)', type: 'text' },
+            { name: 'releaseLabel', label: 'Etichetta di uscita', type: 'text' },
+            { name: 'description', label: 'Descrizione', type: 'textarea' },
+            { name: 'order', label: 'Ordine (più basso = prima)', type: 'number' },
+            { name: 'draft', label: 'Bozza (non pubblicato)', type: 'checkbox' },
+          ],
+        },
+      };
+
+      let currentType = 'news';
+      const $ = (s) => document.querySelector(s);
+      const api = async (path, opts) => {
+        const r = await fetch(path, opts);
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data.error || `Errore ${r.status}`);
+        return data;
+      };
+      const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+      async function init() {
+        try {
+          const me = await api('/api/me');
+          $('#who').textContent = me.email;
+          $('#gate').hidden = true;
+          $('#app').hidden = false;
+          bindTabs();
+          $('#newBtn').addEventListener('click', () => renderForm(null));
+          loadList();
+        } catch (e) {
+          $('#gate').innerHTML =
+            '<h2>Accesso non riuscito</h2><p>' + esc(e.message) +
+            '</p><p>Assicurati di aver effettuato il login (Cloudflare Access).</p>';
+        }
+      }
+
+      function bindTabs() {
+        document.querySelectorAll('.tab').forEach((t) =>
+          t.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach((x) => x.classList.remove('active'));
+            t.classList.add('active');
+            currentType = t.dataset.type;
+            $('#form').innerHTML = '<p class="empty">Seleziona un elemento o crea “Nuovo”.</p>';
+            loadList();
+          }));
+      }
+
+      async function loadList() {
+        const list = $('#list');
+        list.innerHTML = '<p class="empty">Caricamento…</p>';
+        try {
+          const { items } = await api('/api/list?type=' + currentType);
+          if (!items.length) { list.innerHTML = '<p class="empty">Nessun elemento.</p>'; return; }
+          list.innerHTML = '';
+          for (const it of items) {
+            const b = document.createElement('button');
+            const meta = currentType === 'news' ? (it.date || '') : (it.status || '');
+            b.innerHTML = '<div>' + esc(it.title || it.slug) + '</div><div class="meta">' +
+              esc(meta) + (it.draft ? ' · <span class="draft">bozza</span>' : '') + '</div>';
+            b.addEventListener('click', () => openEntry(it.slug));
+            list.appendChild(b);
+          }
+        } catch (e) { list.innerHTML = '<p class="status err">' + esc(e.message) + '</p>'; }
+      }
+
+      async function openEntry(slug) {
+        try {
+          const res = await api(`/api/entry?type=${currentType}&slug=${encodeURIComponent(slug)}`);
+          renderForm({ slug, ...res });
+        } catch (e) { alert(e.message); }
+      }
+
+      function renderForm(entry) {
+        const schema = SCHEMAS[currentType];
+        const data = entry?.data || {};
+        const form = $('#form');
+        form.dataset.slug = entry?.slug || '';
+        let html = '<h2 style="margin-top:0">' + (entry ? 'Modifica' : 'Nuovo') + ' · ' + schema.label + '</h2>';
+        for (const f of schema.fields) {
+          const val = f.name === 'body' ? (entry?.body || '') : data[f.name];
+          html += renderField(f, val);
+        }
+        html += '<div class="actions"><button type="submit" class="btn">Salva e pubblica</button>' +
+          '<span class="status" id="formStatus"></span></div>';
+        form.innerHTML = html;
+        form.querySelectorAll('input[type=file]').forEach(bindUpload);
+        form.onsubmit = onSave;
+      }
+
+      function renderField(f, val) {
+        const id = 'f_' + f.name;
+        let inner = '';
+        if (f.type === 'textarea' || f.type === 'body')
+          inner = `<textarea id="${id}" name="${f.name}">${esc(val)}</textarea>`;
+        else if (f.type === 'checkbox')
+          inner = `<div class="row"><input type="checkbox" id="${id}" name="${f.name}" ${val ? 'checked' : ''}> <label for="${id}" style="text-transform:none">${esc(f.label)}</label></div>`;
+        else if (f.type === 'select')
+          inner = `<select id="${id}" name="${f.name}">` +
+            f.options.map(([v, l]) => `<option value="${v}" ${val === v ? 'selected' : ''}>${esc(l)}</option>`).join('') + '</select>';
+        else if (f.type === 'image')
+          inner = `<input type="hidden" id="${id}" name="${f.name}" value="${esc(val || '')}">` +
+            `<input type="file" accept="image/*" data-target="${id}">` +
+            `<div id="${id}_prev">${val ? `<img class="cover-prev" src="https://github.com/formahub3d-cloud/centioniproduzioni/raw/main/${esc(String(val).replace(/^\//, ''))}" alt="">` : ''}</div>`;
+        else if (f.type === 'number')
+          inner = `<input type="number" id="${id}" name="${f.name}" value="${esc(val ?? '')}">`;
+        else
+          inner = `<input type="${f.type}" id="${id}" name="${f.name}" value="${esc(val ?? '')}" ${f.required ? 'required' : ''}>`;
+        const cls = f.type === 'body' ? 'field field--body' : 'field';
+        const lbl = f.type === 'checkbox' ? '' : `<label for="${id}">${esc(f.label)}${f.required ? ' *' : ''}</label>`;
+        return `<div class="${cls}">${lbl}${inner}</div>`;
+      }
+
+      function bindUpload(input) {
+        input.addEventListener('change', async () => {
+          const file = input.files[0];
+          if (!file) return;
+          const status = $('#formStatus');
+          status.textContent = 'Carico immagine…'; status.className = 'status';
+          try {
+            const dataBase64 = await fileToBase64(file);
+            const res = await api('/api/upload', {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ filename: file.name, dataBase64 }),
+            });
+            const target = document.getElementById(input.dataset.target);
+            target.value = res.path;
+            document.getElementById(input.dataset.target + '_prev').innerHTML =
+              `<img class="cover-prev" src="${URL.createObjectURL(file)}" alt="">`;
+            status.textContent = 'Immagine caricata.'; status.className = 'status ok';
+          } catch (e) { status.textContent = e.message; status.className = 'status err'; }
+        });
+      }
+
+      function fileToBase64(file) {
+        return new Promise((resolve, reject) => {
+          const r = new FileReader();
+          r.onload = () => resolve(String(r.result).split(',')[1]);
+          r.onerror = reject;
+          r.readAsDataURL(file);
+        });
+      }
+
+      async function onSave(e) {
+        e.preventDefault();
+        const form = e.target;
+        const schema = SCHEMAS[currentType];
+        const status = $('#formStatus');
+        const data = {}; let body = '';
+        for (const f of schema.fields) {
+          const el = form.querySelector(`[name="${f.name}"]`);
+          if (!el) continue;
+          if (f.name === 'body') { body = el.value; continue; }
+          if (f.type === 'checkbox') data[f.name] = el.checked;
+          else if (el.value !== '') data[f.name] = el.value;
+        }
+        status.textContent = 'Salvataggio…'; status.className = 'status';
+        form.querySelector('button[type=submit]').disabled = true;
+        try {
+          const res = await api('/api/save', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: currentType, slug: form.dataset.slug || undefined, data, body }),
+          });
+          status.textContent = 'Salvato! Il sito si aggiorna tra 1–2 minuti.'; status.className = 'status ok';
+          form.dataset.slug = res.slug;
+          loadList();
+        } catch (e2) { status.textContent = e2.message; status.className = 'status err'; }
+        finally { form.querySelector('button[type=submit]').disabled = false; }
+      }
+
+      init();
+    </script>
+  </body>
+</html>

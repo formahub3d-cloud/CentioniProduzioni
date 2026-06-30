@@ -1,13 +1,9 @@
 ---
-title: 'Nasce Centioni Produzioni'
-date: 2026-06-25
-cover: '../../assets/media/news-esempio.jpg'
-excerpt: >-
-  Prende il via Centioni Produzioni, la nuova realtà con cui Niccolò firma e
-  realizza i suoi contenuti video, i format social e i progetti digitali.
-tags:
-  - annunci
-  - produzioni
+title: "Nasce Centioni Produzioni"
+date: "2026-06-25"
+cover: "/src/assets/media/news-esempio.jpg"
+excerpt: "Prende il via Centioni Produzioni, la nuova realtà con cui Niccolò firma e realizza i suoi contenuti video, i format social e i progetti digitali."
+tags: ["annunci","produzioni"]
 draft: false
 ---
 
