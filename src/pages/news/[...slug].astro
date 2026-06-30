@@ -1,6 +1,6 @@
 ---
 import { getCollection, render } from 'astro:content';
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
@@ -33,16 +33,27 @@ const words = (post.body ?? '').split(/\s+/).filter(Boolean).length;
 const readingTime = Math.max(1, Math.round(words / 200));
 
 const ogImage = cover?.src;
+const pageUrl = new URL(`/news/${post.id}`, SITE.url).href;
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Article',
   headline: title,
   description: excerpt,
   datePublished: date.toISOString(),
+  dateModified: date.toISOString(),
+  inLanguage: 'it-IT',
   author: { '@type': 'Organization', name: SITE.author },
-  publisher: { '@type': 'Organization', name: SITE.name },
+  publisher: {
+    '@type': 'Organization',
+    name: SITE.name,
+    logo: {
+      '@type': 'ImageObject',
+      url: new URL('/logo-mark.svg', SITE.url).href,
+    },
+  },
   keywords: tags.join(', '),
-  url: new URL(`/news/${post.id}`, SITE.url).href,
+  url: pageUrl,
+  mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
   ...(ogImage ? { image: new URL(ogImage, SITE.url).href } : {}),
 };
 
@@ -83,8 +94,9 @@ const breadcrumb = {
     {
       cover && (
         <div class="wrap post__cover reveal media-reveal">
-          <Image
+          <Picture
             src={cover}
+            formats={['avif', 'webp']}
             alt={`Copertina: ${title}`}
             widths={[600, 1000, 1600]}
             sizes="(min-width: 68rem) 68rem, 100vw"

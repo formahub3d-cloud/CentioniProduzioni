@@ -93,12 +93,16 @@ body {
 }
 
 img,
-picture,
 svg,
 video {
   display: block;
   max-width: 100%;
   height: auto;
+}
+
+/* <Picture> wrapper must not affect layout: the <img> participates directly. */
+picture {
+  display: contents;
 }
 
 h1,

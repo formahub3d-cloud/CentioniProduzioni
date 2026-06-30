@@ -11,6 +11,7 @@ const posts = (await getCollection('news', ({ data }) => !data.draft)).sort(
 <BaseLayout
   title="News"
   description="News e aggiornamenti: novità sui progetti e dal mondo dello spettacolo."
+  image="/og/news.jpg"
 >
   <section class="wrap page-head">
     <p class="eyebrow reveal">News</p>

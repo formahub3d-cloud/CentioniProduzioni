@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -26,8 +26,9 @@ const href = inCorso ? `/produzioni#${produzione.id}` : undefined;
   <figure class="prod__media wipe">
     {
       cover && (
-        <Image
+        <Picture
           src={cover}
+          formats={['avif', 'webp']}
           alt={`${title} — copertina`}
           widths={[480, 800, 1200]}
           sizes="(min-width: 56rem) 33vw, (min-width: 36rem) 50vw, 100vw"

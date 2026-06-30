@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE, SOCIAL } from '../data/site.ts';
 import ritratto from '../assets/media/niccolo-ritratto.jpg';
@@ -40,6 +40,7 @@ const person = {
 <BaseLayout
   title="Chi Siamo"
   description="La storia di Niccolò Centioni e la nascita di Centioni Produzioni."
+  image="/og/chi-siamo.jpg"
   jsonLd={[jsonLd, breadcrumb, person]}
 >
   <section class="wrap page-head">
@@ -52,8 +53,9 @@ const person = {
 
   <section class="wrap about">
     <figure class="about__portrait reveal media-reveal">
-      <Image
+      <Picture
         src={ritratto}
+        formats={['avif', 'webp']}
         alt="Niccolò Centioni"
         widths={[480, 800, 1000]}
         sizes="(min-width: 52rem) 40vw, 100vw"

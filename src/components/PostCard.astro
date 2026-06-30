@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import FormattedDate from './FormattedDate.astro';
 
@@ -16,8 +16,9 @@ const { title, date, cover, excerpt, tags } = post.data;
     {
       cover && (
         <div class="post-card__media wipe">
-          <Image
+          <Picture
             src={cover}
+            formats={['avif', 'webp']}
             alt={`Copertina dell'articolo ${title}`}
             widths={[400, 800]}
             sizes="(min-width: 48rem) 40vw, 100vw"
