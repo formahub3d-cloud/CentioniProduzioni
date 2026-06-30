@@ -1,5 +1,5 @@
 ---
-import { SITE } from '../data/site.ts';
+import { SITE, SOCIAL } from '../data/site.ts';
 
 interface Props {
   title?: string;
@@ -10,8 +10,8 @@ interface Props {
   type?: 'website' | 'article';
   /** Set true on pages that should not be indexed (e.g. drafts). */
   noindex?: boolean;
-  /** Optional JSON-LD object injected as-is. */
-  jsonLd?: Record<string, unknown>;
+  /** One JSON-LD object or an array of them (page-specific). */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
@@ -26,6 +26,30 @@ const {
 const pageTitle = title ? `${title} — ${SITE.name}` : SITE.title;
 const canonical = new URL(Astro.url.pathname, SITE.url).href;
 const ogImage = new URL(image ?? SITE.ogImage, SITE.url).href;
+
+// Sitewide entity graph (Organization + WebSite) — good for SEO/GEO.
+const sameAs = SOCIAL.filter((s) => /^https?:\/\//.test(s.href)).map((s) => s.href);
+const siteGraph: Record<string, unknown>[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: SITE.name,
+    url: SITE.url,
+    logo: new URL('/logo-mark.svg', SITE.url).href,
+    email: SITE.email,
+    ...(sameAs.length ? { sameAs } : {}),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE.name,
+    url: SITE.url,
+    inLanguage: 'it-IT',
+  },
+];
+
+const pageGraph = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+const allJsonLd = [...siteGraph, ...pageGraph];
 ---
 
 <title>{pageTitle}</title>
@@ -40,19 +64,16 @@ const ogImage = new URL(image ?? SITE.ogImage, SITE.url).href;
 <meta property="og:title" content={pageTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
-{ogImage && <meta property="og:image" content={ogImage} />}
+<meta property="og:image" content={ogImage} />
 
 <!-- Twitter / X -->
-<meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+<meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content={pageTitle} />
 <meta name="twitter:description" content={description} />
-{ogImage && <meta name="twitter:image" content={ogImage} />}
+<meta name="twitter:image" content={ogImage} />
 
 {
-  jsonLd && (
-    <script
-      type="application/ld+json"
-      set:html={JSON.stringify(jsonLd)}
-    />
-  )
+  allJsonLd.map((item) => (
+    <script type="application/ld+json" set:html={JSON.stringify(item)} />
+  ))
 }

@@ -31,6 +31,16 @@ const jsonLd = {
   url: new URL(`/news/${post.id}`, SITE.url).href,
   ...(ogImage ? { image: new URL(ogImage, SITE.url).href } : {}),
 };
+
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'News', item: new URL('/news', SITE.url).href },
+    { '@type': 'ListItem', position: 3, name: title },
+  ],
+};
 ---
 
 <BaseLayout
@@ -38,7 +48,7 @@ const jsonLd = {
   description={excerpt}
   image={ogImage}
   type="article"
-  jsonLd={jsonLd}
+  jsonLd={[jsonLd, breadcrumb]}
 >
   <article class="post">
     <header class="wrap post__head">

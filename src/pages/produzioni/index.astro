@@ -3,17 +3,28 @@ import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import LiteYouTube from '../../components/LiteYouTube.astro';
 import ProduzioneCard from '../../components/ProduzioneCard.astro';
+import { SITE } from '../../data/site.ts';
 
 const all = (await getCollection('produzioni', ({ data }) => !data.draft)).sort(
   (a, b) => a.data.order - b.data.order,
 );
 const inCorso = all.filter((p) => p.data.status === 'in-corso');
 const inUscita = all.filter((p) => p.data.status === 'in-uscita');
+
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Produzioni Video' },
+  ],
+};
 ---
 
 <BaseLayout
   title="Produzioni Video"
   description="Le produzioni video di Centioni Produzioni: progetti in corso e in uscita."
+  jsonLd={breadcrumb}
 >
   <section class="wrap page-head">
     <p class="eyebrow reveal">Produzioni Video</p>

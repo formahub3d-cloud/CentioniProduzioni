@@ -15,12 +15,21 @@ const jsonLd = {
     worksFor: { '@type': 'Organization', name: SITE.name },
   },
 };
+
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Chi Siamo' },
+  ],
+};
 ---
 
 <BaseLayout
   title="Chi Siamo"
   description="La storia di Niccolò Centioni e la nascita di Centioni Produzioni."
-  jsonLd={jsonLd}
+  jsonLd={[jsonLd, breadcrumb]}
 >
   <section class="wrap page-head">
     <p class="eyebrow reveal">Chi Siamo</p>

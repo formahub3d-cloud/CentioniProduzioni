@@ -9,12 +9,21 @@ const jsonLd = {
   url: new URL('/contatti', SITE.url).href,
   about: { '@type': 'Organization', name: SITE.name, email: SITE.email },
 };
+
+const breadcrumb = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+    { '@type': 'ListItem', position: 2, name: 'Contatti' },
+  ],
+};
 ---
 
 <BaseLayout
   title="Contatti"
   description="Per info, collaborazioni o proposte commerciali: scrivici."
-  jsonLd={jsonLd}
+  jsonLd={[jsonLd, breadcrumb]}
 >
   <section class="wrap page-head">
     <p class="eyebrow reveal">Contatti</p>
