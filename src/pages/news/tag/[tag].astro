@@ -1,0 +1,74 @@
+---
+import { getCollection } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PostCard from '../../../components/PostCard.astro';
+import { slugify } from '../../../lib/slug.ts';
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection('news', ({ data }) => !data.draft);
+  const groups = new Map<string, { tag: string; posts: typeof posts }>();
+  for (const post of posts) {
+    for (const tag of post.data.tags) {
+      const slug = slugify(tag);
+      if (!slug) continue;
+      if (!groups.has(slug)) groups.set(slug, { tag, posts: [] });
+      groups.get(slug)!.posts.push(post);
+    }
+  }
+  return [...groups.entries()].map(([slug, { tag, posts }]) => ({
+    params: { tag: slug },
+    props: {
+      tag,
+      posts: posts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { tag, posts } = Astro.props;
+---
+
+<BaseLayout
+  title={`News · #${tag}`}
+  description={`Articoli con il tag ${tag}.`}
+  noindex
+>
+  <section class="wrap page-head">
+    <p class="eyebrow reveal">Tag</p>
+    <h1 class="reveal reveal-lines"><span class="line"><span>#{tag}</span></span></h1>
+    <p class="page-head__lead reveal" style="--i:1">
+      {posts.length} {posts.length === 1 ? 'articolo' : 'articoli'} con questo tag.
+    </p>
+  </section>
+
+  <section class="wrap">
+    <div class="stack">
+      {posts.map((post) => <PostCard post={post} />)}
+    </div>
+    <p class="back">
+      <a href="/news" class="link-arrow"><span aria-hidden="true">←</span> Tutte le news</a>
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding-block: clamp(2.5rem, 6vw, 5rem) var(--space-4);
+  }
+  .page-head h1 {
+    font-size: var(--step-3);
+    margin-top: var(--space-1);
+  }
+  .page-head__lead {
+    margin-top: var(--space-2);
+    color: var(--color-ink-soft);
+    font-size: var(--step-1);
+  }
+  .stack {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .back {
+    margin-top: var(--space-5);
+  }
+</style>

@@ -2,9 +2,15 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PostCard from '../../components/PostCard.astro';
+import { slugify } from '../../lib/slug.ts';
 
 const posts = (await getCollection('news', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+// Tag unici (per i chip di filtro)
+const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort((a, b) =>
+  a.localeCompare(b, 'it'),
 );
 ---
 
@@ -21,6 +27,17 @@ const posts = (await getCollection('news', ({ data }) => !data.draft)).sort(
     <p class="page-head__lead reveal" style="--i: 1">
       Notizie, novità dal mondo dello spettacolo e aggiornamenti sui progetti.
     </p>
+    {
+      tags.length > 0 && (
+        <ul class="tagbar reveal" style="--i: 2" aria-label="Filtra per tag">
+          {tags.map((t) => (
+            <li>
+              <a href={`/news/tag/${slugify(t)}`} class="tagbar__chip">#{t}</a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
   </section>
 
   <section class="wrap">
@@ -55,5 +72,32 @@ const posts = (await getCollection('news', ({ data }) => !data.draft)).sort(
   .stack {
     display: grid;
     gap: var(--space-5);
+  }
+  .tagbar {
+    list-style: none;
+    padding: 0;
+    margin: var(--space-3) 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  .tagbar__chip {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    color: var(--color-ink-soft);
+    padding: 0.35em 0.8em;
+    border: 1px solid var(--color-line);
+    border-radius: 100px;
+    transition: border-color 0.2s var(--ease), color 0.2s var(--ease),
+      background 0.2s var(--ease);
+  }
+  .tagbar__chip:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background: var(--color-surface);
   }
 </style>

@@ -5,6 +5,7 @@ import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import { SITE } from '../../data/site.ts';
+import { slugify } from '../../lib/slug.ts';
 
 export const getStaticPaths = (async () => {
   const posts = (await getCollection('news', ({ data }) => !data.draft)).sort(
@@ -83,7 +84,9 @@ const breadcrumb = {
         <span>{readingTime} min di lettura</span>
         {tags.length > 0 && (
           <ul class="post__tags">
-            {tags.map((t) => <li>#{t}</li>)}
+            {tags.map((t) => (
+              <li><a href={`/news/tag/${slugify(t)}`}>#{t}</a></li>
+            ))}
           </ul>
         )}
       </div>
@@ -151,10 +154,18 @@ const breadcrumb = {
   }
   .post__tags {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.6rem;
     list-style: none;
     padding: 0;
     margin: 0;
+  }
+  .post__tags a {
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+  .post__tags a:hover {
+    color: var(--color-accent);
   }
   .post__head h1 {
     font-size: var(--step-3);
