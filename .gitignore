@@ -8,13 +8,6 @@ node_modules/
 # astro
 .astro/
 
-# TinaCMS — artefatti generati dalla build (NON committare: contengono il token)
-tina/__generated__/
-tina/.cache/
-tina-lock.json
-# admin SPA generata da `tinacms build` (11MB, ricostruita in CI)
-public/admin/
-
 # cloudflare / wrangler
 .wrangler/
 
