@@ -9,8 +9,8 @@ export const SITE = {
   url: 'https://centioniproduzioni.it',
   /** Short site / brand name. */
   name: 'Centioni Produzioni',
-  /** Default <title> suffix and OG site name. */
-  title: 'Centioni Produzioni',
+  /** Homepage <title> and OG site name. */
+  title: 'Centioni Produzioni — Produzioni video di Niccolò Centioni',
   /** Default meta description / homepage subtitle. */
   description:
     'Il canale ufficiale dei contenuti video, dei progetti e delle novità di Niccolò Centioni.',

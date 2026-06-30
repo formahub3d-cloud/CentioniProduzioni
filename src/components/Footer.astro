@@ -44,6 +44,7 @@ const year = new Date().getFullYear();
 
   <div class="wrap site-footer__copy">
     <span>© {year} {SITE.name}</span>
+    <a href="/privacy">Privacy</a>
   </div>
 </footer>
 
@@ -112,5 +113,15 @@ const year = new Date().getFullYear();
     margin-top: var(--space-4);
     font-size: var(--step--1);
     color: var(--color-muted);
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+  .site-footer__copy a {
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+  .site-footer__copy a:hover {
+    color: var(--color-accent);
   }
 </style>

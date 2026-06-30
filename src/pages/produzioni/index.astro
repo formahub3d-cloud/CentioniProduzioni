@@ -19,12 +19,27 @@ const breadcrumb = {
     { '@type': 'ListItem', position: 2, name: 'Produzioni Video' },
   ],
 };
+
+// VideoObject per i progetti in corso con un video YouTube.
+const videos = inCorso
+  .filter((p) => p.data.youtube)
+  .map((p) => ({
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: p.data.title,
+    description: p.data.description ?? SITE.description,
+    ...(p.data.cover
+      ? { thumbnailUrl: new URL(p.data.cover.src, SITE.url).href }
+      : {}),
+    embedUrl: `https://www.youtube-nocookie.com/embed/${p.data.youtube}`,
+    contentUrl: `https://www.youtube.com/watch?v=${p.data.youtube}`,
+  }));
 ---
 
 <BaseLayout
   title="Produzioni Video"
   description="Le produzioni video di Centioni Produzioni: progetti in corso e in uscita."
-  jsonLd={breadcrumb}
+  jsonLd={[breadcrumb, ...videos]}
 >
   <section class="wrap page-head">
     <p class="eyebrow reveal">Produzioni Video</p>

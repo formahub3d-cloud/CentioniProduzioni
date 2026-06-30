@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/site.ts';
+
+const updated = '30 giugno 2026';
+---
+
+<BaseLayout
+  title="Privacy"
+  description="Informativa privacy di Centioni Produzioni: dati del form di contatto e analytics."
+>
+  <section class="wrap page-head">
+    <p class="eyebrow reveal">Privacy</p>
+    <h1 class="reveal reveal-lines"><span class="line"><span>Informativa privacy</span></span></h1>
+    <p class="page-head__lead reveal" style="--i:1">Ultimo aggiornamento: {updated}</p>
+  </section>
+
+  <section class="wrap prose flow legal">
+    <h2>Titolare</h2>
+    <p>
+      Il titolare del trattamento è <strong>{SITE.name}</strong>. Per qualsiasi
+      richiesta relativa ai tuoi dati puoi scrivere a
+      <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+    </p>
+
+    <h2>Modulo di contatto</h2>
+    <p>
+      Quando usi il modulo nella pagina <a href="/contatti">Contatti</a>,
+      raccogliamo i dati che inserisci — <em>nome, email, oggetto e
+      messaggio</em> — al solo scopo di leggere e rispondere alla tua richiesta.
+      L'invio è gestito dal servizio <strong>Web3Forms</strong>, che inoltra il
+      messaggio alla nostra casella email. La base giuridica è il riscontro alla
+      tua richiesta; i dati non vengono usati per marketing né ceduti a terzi, e
+      vengono conservati per il tempo necessario a gestire il contatto.
+    </p>
+
+    <h2>Statistiche di traffico</h2>
+    <p>
+      Utilizziamo <strong>Cloudflare Web Analytics</strong>, una soluzione
+      <strong>senza cookie</strong> e in forma aggregata, che non profila i
+      visitatori e non raccoglie dati personali identificativi. Per questo il
+      sito non mostra banner di consenso ai cookie.
+    </p>
+
+    <h2>Cookie</h2>
+    <p>
+      Questo sito <strong>non utilizza cookie di profilazione o di
+      tracciamento</strong>.
+    </p>
+
+    <h2>Hosting e contenuti esterni</h2>
+    <p>
+      Il sito è ospitato su <strong>Cloudflare Pages</strong>. Alcune pagine
+      possono incorporare video di <strong>YouTube</strong>: il player viene
+      caricato solo dopo un tuo clic ("click-to-load"), così nessun dato viene
+      inviato a YouTube finché non decidi di guardare il video. In quel momento
+      si applica l'informativa privacy di YouTube/Google.
+    </p>
+
+    <h2>I tuoi diritti</h2>
+    <p>
+      Puoi richiedere in qualsiasi momento l'accesso, la rettifica o la
+      cancellazione dei tuoi dati scrivendo a
+      <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding-block: clamp(2.5rem, 6vw, 5rem) var(--space-2);
+  }
+  .page-head h1 {
+    font-size: var(--step-3);
+    margin-top: var(--space-1);
+  }
+  .page-head__lead {
+    margin-top: var(--space-1);
+    color: var(--color-muted);
+    font-size: var(--step--1);
+  }
+  .legal {
+    padding-bottom: var(--space-6);
+  }
+</style>
