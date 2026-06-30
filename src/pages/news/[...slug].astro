@@ -7,16 +7,30 @@ import FormattedDate from '../../components/FormattedDate.astro';
 import { SITE } from '../../data/site.ts';
 
 export const getStaticPaths = (async () => {
-  const posts = await getCollection('news', ({ data }) => !data.draft);
-  return posts.map((post) => ({
+  const posts = (await getCollection('news', ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+  );
+  return posts.map((post, i) => ({
     params: { slug: post.id },
-    props: { post },
+    props: {
+      post,
+      older: posts[i + 1]
+        ? { id: posts[i + 1].id, title: posts[i + 1].data.title }
+        : null,
+      newer: posts[i - 1]
+        ? { id: posts[i - 1].id, title: posts[i - 1].data.title }
+        : null,
+    },
   }));
 }) satisfies GetStaticPaths;
 
-const { post } = Astro.props;
+const { post, older, newer } = Astro.props;
 const { title, date, cover, excerpt, tags } = post.data;
 const { Content } = await render(post);
+
+// Tempo di lettura stimato dal corpo Markdown (~200 parole/min).
+const words = (post.body ?? '').split(/\s+/).filter(Boolean).length;
+const readingTime = Math.max(1, Math.round(words / 200));
 
 const ogImage = cover?.src;
 const jsonLd = {
@@ -54,6 +68,8 @@ const breadcrumb = {
     <header class="wrap post__head">
       <div class="post__meta reveal">
         <FormattedDate date={date} />
+        <span aria-hidden="true">·</span>
+        <span>{readingTime} min di lettura</span>
         {tags.length > 0 && (
           <ul class="post__tags">
             {tags.map((t) => <li>#{t}</li>)}
@@ -81,6 +97,27 @@ const breadcrumb = {
     <div class="wrap prose flow">
       <Content />
     </div>
+
+    {
+      (older || newer) && (
+        <nav class="wrap post__nav" aria-label="Altri articoli">
+          {older ? (
+            <a href={`/news/${older.id}`} class="post__nav-item post__nav-item--prev">
+              <span class="post__nav-label"><span aria-hidden="true">←</span> Precedente</span>
+              <span class="post__nav-title">{older.title}</span>
+            </a>
+          ) : (
+            <span />
+          )}
+          {newer && (
+            <a href={`/news/${newer.id}`} class="post__nav-item post__nav-item--next">
+              <span class="post__nav-label">Successivo <span aria-hidden="true">→</span></span>
+              <span class="post__nav-title">{newer.title}</span>
+            </a>
+          )}
+        </nav>
+      )
+    }
 
     <div class="wrap post__back">
       <a href="/news" class="link-arrow"><span aria-hidden="true">←</span> Tutte le news</a>
@@ -123,7 +160,51 @@ const breadcrumb = {
     width: 100%;
     border-radius: var(--radius);
   }
+  .post__nav {
+    margin-top: var(--space-6);
+    display: grid;
+    gap: var(--space-2);
+    border-top: 1px solid var(--color-line);
+    padding-top: var(--space-3);
+  }
+  @media (min-width: 40rem) {
+    .post__nav {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-3);
+    }
+  }
+  .post__nav-item {
+    display: grid;
+    gap: 0.3rem;
+    text-decoration: none;
+    color: inherit;
+    padding: var(--space-2);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius);
+    transition: border-color 0.2s var(--ease), background 0.2s var(--ease);
+  }
+  .post__nav-item:hover {
+    border-color: var(--color-accent);
+    background: var(--color-surface);
+  }
+  .post__nav-item--next {
+    text-align: right;
+  }
+  .post__nav-label {
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .post__nav-title {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    color: var(--color-ink);
+  }
+
   .post__back {
-    margin-top: var(--space-5);
+    margin-top: var(--space-4);
   }
 </style>

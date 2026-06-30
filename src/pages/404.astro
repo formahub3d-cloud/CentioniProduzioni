@@ -1,30 +1,81 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Logo from '../components/Logo.astro';
+import { NAV } from '../data/site.ts';
 ---
 
 <BaseLayout title="Pagina non trovata" noindex>
   <section class="wrap notfound">
-    <p class="eyebrow">Errore 404</p>
-    <h1>Questa pagina non esiste</h1>
+    <span class="notfound__mark"><Logo size={56} /></span>
+    <p class="notfound__code">404</p>
+    <h1 class="notfound__title">Questa pagina non esiste</h1>
     <p class="notfound__lead">
-      Il contenuto che cercavi è stato spostato o non esiste più.
+      Il contenuto che cercavi è stato spostato o non esiste più. Riparti da qui:
     </p>
+
+    <ul class="notfound__links">
+      {
+        NAV.map((item) => (
+          <li>
+            <a href={item.href}>{item.label} <span aria-hidden="true">→</span></a>
+          </li>
+        ))
+      }
+    </ul>
+
     <a href="/" class="btn">Torna alla home</a>
   </section>
 </BaseLayout>
 
 <style>
   .notfound {
-    padding-block: clamp(4rem, 12vw, 9rem);
-    max-width: var(--measure);
+    padding-block: clamp(3.5rem, 10vw, 7rem);
+    max-width: 44rem;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
-  .notfound h1 {
-    font-size: var(--step-3);
+  .notfound__mark {
+    color: var(--color-accent);
+    display: inline-flex;
+  }
+  .notfound__code {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 18vw, 9rem);
+    line-height: 1;
+    color: var(--color-accent);
+    margin-top: var(--space-2);
+  }
+  .notfound__title {
+    font-size: var(--step-2);
     margin-top: var(--space-1);
   }
   .notfound__lead {
     margin-block: var(--space-2) var(--space-3);
     color: var(--color-ink-soft);
     font-size: var(--step-1);
+    max-width: var(--measure);
+  }
+  .notfound__links {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-4);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.6rem 1.4rem;
+  }
+  .notfound__links a {
+    font-family: var(--font-sans);
+    font-size: var(--step--1);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--color-ink-soft);
+  }
+  .notfound__links a:hover {
+    color: var(--color-accent);
   }
 </style>

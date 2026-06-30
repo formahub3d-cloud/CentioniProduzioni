@@ -30,6 +30,7 @@ const dur = slides.length * 3.6;
           widths={[800, 1280, 1800]}
           sizes="100vw"
           loading={i === 0 ? 'eager' : 'lazy'}
+          fetchpriority={i === 0 ? 'high' : undefined}
         />
         {s.label && <figcaption class="slide__cap">{s.label}</figcaption>}
       </figure>
