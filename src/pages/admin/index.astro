@@ -12,83 +12,128 @@ export const prerender = true;
     <meta name="robots" content="noindex, nofollow" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <title>Redazione — Centioni Produzioni</title>
-    <style>
+    <style is:global>
       :root {
-        --teal: #176b7a; --teal-deep: #0f5663; --bg: #f1eee6; --surface: #fff;
-        --ink: #15323a; --soft: #44595f; --muted: #6b756f; --line: #ddd7c9;
-        --ok: #2f8f6b; --err: #a23b2c;
+        --teal: #176b7a; --teal-deep: #0f5663; --bg: #eeeae1; --surface: #fff;
+        --ink: #15323a; --soft: #4a5f65; --muted: #7c857f; --line: #e0dccf;
+        --ok: #2f8f6b; --err: #b23a2b; --radius: 10px;
+        --shadow: 0 1px 3px rgba(20,50,58,.06), 0 6px 20px rgba(20,50,58,.05);
       }
       * { box-sizing: border-box; }
       body { margin: 0; background: var(--bg); color: var(--ink);
-        font: 16px/1.55 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
-      a { color: var(--teal); }
-      header { background: var(--teal); color: #fff; padding: .7rem 1.2rem;
-        display: flex; align-items: center; gap: 1rem; }
-      header h1 { font-size: 1.05rem; margin: 0; font-weight: 700; letter-spacing: .01em; }
-      header .who { margin-left: auto; font-size: .85rem; opacity: .95; }
-      header a.logout { color: #fff; font-size: .85rem; }
-      .wrap { max-width: 60rem; margin: 0 auto; padding: 1.2rem; }
-      .tabs { display: flex; gap: .5rem; margin-bottom: 1rem; }
-      .tab { padding: .5rem 1rem; border: 1px solid var(--line); background: var(--surface);
-        border-radius: 100px; cursor: pointer; font-weight: 600; font-size: .9rem; color: var(--soft); }
-      .tab.active { background: var(--teal); color: #fff; border-color: var(--teal); }
-      .cols { display: grid; gap: 1.2rem; grid-template-columns: 1fr; }
-      @media (min-width: 52rem) { .cols { grid-template-columns: 18rem 1fr; align-items: start; } }
-      .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 1rem; }
-      .list { display: grid; gap: .4rem; }
-      .list button { text-align: left; background: none; border: 1px solid var(--line); border-radius: 6px;
-        padding: .55rem .7rem; cursor: pointer; font: inherit; color: var(--ink); }
-      .list button:hover { border-color: var(--teal); }
-      .list .meta { font-size: .75rem; color: var(--muted); }
-      .list .draft { color: var(--err); font-weight: 600; }
-      .btn { background: var(--teal); color: #fff; border: 0; border-radius: 6px;
-        padding: .6rem 1.1rem; font: inherit; font-weight: 600; cursor: pointer; }
-      .btn:hover { background: var(--teal-deep); }
-      .btn--ghost { background: transparent; color: var(--teal); border: 1px solid var(--teal); }
-      .btn[disabled] { opacity: .5; cursor: default; }
-      .field { display: grid; gap: .3rem; margin-bottom: .9rem; }
-      .field label { font-size: .8rem; font-weight: 600; color: var(--soft); text-transform: uppercase; letter-spacing: .03em; }
+        font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+      button { font: inherit; cursor: pointer; }
+      /* top bar */
+      .topbar { background: var(--teal); color: #fff; padding: .7rem 1.1rem;
+        display: flex; align-items: center; gap: .7rem; position: sticky; top: 0; z-index: 10; }
+      .topbar svg { display: block; }
+      .topbar .brand { font-weight: 700; letter-spacing: .01em; }
+      .topbar .brand small { display: block; font-weight: 500; font-size: .72rem; opacity: .8; letter-spacing: .04em; text-transform: uppercase; }
+      .topbar .spacer { margin-left: auto; }
+      .topbar .who { font-size: .85rem; opacity: .95; }
+      .topbar .logout { color: #fff; font-size: .8rem; text-decoration: none; border: 1px solid rgba(255,255,255,.4);
+        padding: .3rem .7rem; border-radius: 100px; }
+      .topbar .logout:hover { background: rgba(255,255,255,.15); }
+
+      .wrap { max-width: 66rem; margin: 0 auto; padding: 1.2rem; }
+      .tabs { display: inline-flex; background: var(--surface); border: 1px solid var(--line);
+        border-radius: 100px; padding: .25rem; margin-bottom: 1.2rem; box-shadow: var(--shadow); }
+      .tab { padding: .45rem 1.1rem; border: 0; background: none; border-radius: 100px;
+        font-weight: 600; font-size: .9rem; color: var(--soft); }
+      .tab.active { background: var(--teal); color: #fff; }
+
+      .cols { display: grid; gap: 1.2rem; grid-template-columns: 1fr; align-items: start; }
+      @media (min-width: 54rem) { .cols { grid-template-columns: 20rem 1fr; } }
+
+      .side .newbtn { width: 100%; background: var(--teal); color: #fff; border: 0; border-radius: var(--radius);
+        padding: .75rem; font-weight: 700; margin-bottom: .8rem; box-shadow: var(--shadow); }
+      .side .newbtn:hover { background: var(--teal-deep); }
+      .list { display: grid; gap: .5rem; }
+      .card { display: grid; grid-template-columns: 3.4rem 1fr; gap: .7rem; align-items: center;
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: .5rem; text-align: left; width: 100%; }
+      .card:hover { border-color: var(--teal); }
+      .card.sel { border-color: var(--teal); box-shadow: 0 0 0 1px var(--teal) inset; }
+      .card .thumb { width: 3.4rem; height: 3.4rem; border-radius: 7px; object-fit: cover; background: var(--bg);
+        display: grid; place-items: center; color: var(--muted); overflow: hidden; }
+      .card .thumb img { width: 100%; height: 100%; object-fit: cover; }
+      .card .ttl { display: block; font-weight: 600; font-size: .9rem; line-height: 1.25; }
+      .card .meta { display: block; font-size: .74rem; color: var(--muted); margin-top: .12rem; }
+      .badge { display: inline-block; font-size: .64rem; font-weight: 700; text-transform: uppercase;
+        letter-spacing: .05em; padding: .1em .5em; border-radius: 100px; margin-left: .3rem; }
+      .badge.draft { background: #f4e3df; color: var(--err); }
+
+      .editor { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
+        padding: 1.3rem; box-shadow: var(--shadow); }
+      .editor h2 { margin: 0 0 1rem; font-size: 1.15rem; }
+      .field { margin-bottom: 1rem; }
+      .field > label { display: block; font-size: .76rem; font-weight: 700; color: var(--soft);
+        text-transform: uppercase; letter-spacing: .04em; margin-bottom: .3rem; }
       .field input[type=text], .field input[type=date], .field input[type=number],
-      .field textarea, .field select { font: inherit; padding: .55rem .65rem; border: 1px solid var(--line);
-        border-radius: 6px; background: #fff; color: var(--ink); width: 100%; }
-      .field textarea { resize: vertical; min-height: 5rem; }
-      .field--body textarea { min-height: 14rem; font-family: ui-monospace, monospace; font-size: .92rem; }
-      .row { display: flex; align-items: center; gap: .5rem; }
-      .cover-prev { max-width: 100%; border-radius: 6px; margin-top: .4rem; border: 1px solid var(--line); }
-      .actions { display: flex; gap: .6rem; align-items: center; margin-top: .6rem; flex-wrap: wrap; }
-      .status { font-size: .9rem; min-height: 1.2em; }
+      .field textarea, .field select { font: inherit; padding: .6rem .7rem; border: 1px solid var(--line);
+        border-radius: 8px; background: #fff; color: var(--ink); width: 100%; }
+      .field input:focus, .field textarea:focus, .field select:focus { outline: 2px solid var(--teal); outline-offset: 0; border-color: var(--teal); }
+      .field textarea { resize: vertical; min-height: 4.5rem; }
+      .field--body textarea { min-height: 16rem; font-family: ui-monospace, 'SF Mono', monospace; font-size: .9rem; }
+      .grid2 { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+      @media (min-width: 40rem) { .grid2 { grid-template-columns: 1fr 1fr; } }
+      .check { display: flex; align-items: center; gap: .5rem; }
+      .check input { width: 1.1rem; height: 1.1rem; }
+      .check label { font-weight: 600; color: var(--soft); font-size: .9rem; }
+
+      .cover { display: flex; gap: .9rem; align-items: center; flex-wrap: wrap; }
+      .cover .prev { width: 8rem; height: 5rem; border-radius: 8px; background: var(--bg);
+        border: 1px solid var(--line); object-fit: cover; display: grid; place-items: center; color: var(--muted); font-size: .8rem; overflow: hidden; }
+      .cover .prev img { width: 100%; height: 100%; object-fit: cover; }
+      .cover .filebtn { border: 1px solid var(--teal); color: var(--teal); background: #fff; border-radius: 8px; padding: .5rem .9rem; font-weight: 600; }
+      .cover .rm { border: 0; background: none; color: var(--err); font-size: .82rem; text-decoration: underline; }
+
+      .actions { display: flex; gap: .7rem; align-items: center; margin-top: 1.2rem; flex-wrap: wrap;
+        border-top: 1px solid var(--line); padding-top: 1rem; }
+      .btn { background: var(--teal); color: #fff; border: 0; border-radius: 8px; padding: .65rem 1.3rem; font-weight: 700; }
+      .btn:hover { background: var(--teal-deep); }
+      .btn[disabled] { opacity: .5; }
+      .btn-del { margin-left: auto; background: none; color: var(--err); border: 1px solid var(--line); border-radius: 8px; padding: .55rem 1rem; font-weight: 600; }
+      .btn-del:hover { border-color: var(--err); }
+      .status { font-size: .88rem; min-height: 1.2em; }
       .status.ok { color: var(--ok); font-weight: 600; }
       .status.err { color: var(--err); font-weight: 600; }
-      .empty { color: var(--muted); font-size: .9rem; }
-      .gate { max-width: 32rem; margin: 4rem auto; text-align: center; padding: 1.5rem; }
+      .empty { color: var(--muted); font-size: .9rem; padding: .5rem 0; }
+      .gate { max-width: 34rem; margin: 4rem auto; text-align: center; padding: 1.5rem;
+        background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+      .gate h2 { margin-top: 0; }
     </style>
   </head>
   <body>
-    <header>
-      <h1>Redazione · Centioni Produzioni</h1>
+    <div class="topbar">
+      <svg width="30" height="30" viewBox="0 0 120 120" aria-hidden="true">
+        <circle cx="55" cy="63" r="35" fill="none" stroke="#fff" stroke-width="15" stroke-linecap="round" stroke-dasharray="158 62" transform="rotate(-52 55 63)"></circle>
+        <line x1="50" y1="68" x2="78" y2="40" stroke="#fff" stroke-width="15" stroke-linecap="round"></line>
+        <path d="M95 23 L90 54 L63 27 Z" fill="#fff" stroke="#fff" stroke-width="4" stroke-linejoin="round"></path>
+      </svg>
+      <span class="brand">Redazione<small>Centioni Produzioni</small></span>
+      <span class="spacer"></span>
       <span class="who" id="who"></span>
       <a class="logout" href="/cdn-cgi/access/logout">Esci</a>
-    </header>
+    </div>
 
     <div class="wrap" id="app" hidden>
       <div class="tabs">
-        <button class="tab active" data-type="news">Articoli</button>
-        <button class="tab" data-type="produzioni">Produzioni</button>
+        <button class="tab active" data-type="news">📝 Articoli</button>
+        <button class="tab" data-type="produzioni">🎬 Produzioni</button>
       </div>
       <div class="cols">
-        <div class="panel">
-          <button class="btn" id="newBtn" style="width:100%;margin-bottom:.8rem">+ Nuovo</button>
+        <div class="side">
+          <button class="newbtn" id="newBtn">+ Nuovo</button>
           <div class="list" id="list"><p class="empty">Caricamento…</p></div>
         </div>
-        <div class="panel">
-          <form id="form"><p class="empty">Seleziona un elemento o crea “Nuovo”.</p></form>
+        <div class="editor" id="editor">
+          <p class="empty">Seleziona un elemento a sinistra oppure crea “Nuovo”.</p>
         </div>
       </div>
     </div>
 
-    <div class="gate" id="gate">
-      <p>Verifica accesso…</p>
-    </div>
+    <div class="gate" id="gate"><p>Verifica accesso…</p></div>
 
     <script type="module" is:inline>
       const SCHEMAS = {
@@ -96,11 +141,11 @@ export const prerender = true;
           label: 'Articolo',
           fields: [
             { name: 'title', label: 'Titolo', type: 'text', required: true },
-            { name: 'date', label: 'Data', type: 'date', required: true },
+            { name: 'date', label: 'Data', type: 'date', required: true, half: true },
+            { name: 'draft', label: 'Salva come bozza (non pubblicato)', type: 'checkbox', half: true },
             { name: 'cover', label: 'Copertina', type: 'image' },
-            { name: 'excerpt', label: 'Estratto', type: 'textarea', required: true },
+            { name: 'excerpt', label: 'Estratto (riassunto breve)', type: 'textarea', required: true },
             { name: 'tags', label: 'Tag (separati da virgola)', type: 'text' },
-            { name: 'draft', label: 'Bozza (non pubblicato)', type: 'checkbox' },
             { name: 'body', label: 'Contenuto (Markdown)', type: 'body' },
           ],
         },
@@ -108,29 +153,31 @@ export const prerender = true;
           label: 'Produzione',
           fields: [
             { name: 'title', label: 'Titolo', type: 'text', required: true },
-            { name: 'status', label: 'Stato', type: 'select', required: true,
+            { name: 'status', label: 'Stato', type: 'select', required: true, half: true,
               options: [['in-corso', 'In corso'], ['in-uscita', 'In uscita']] },
+            { name: 'order', label: 'Ordine (più basso = prima)', type: 'number', half: true },
             { name: 'cover', label: 'Copertina', type: 'image' },
-            { name: 'youtube', label: 'ID video YouTube', type: 'text' },
-            { name: 'video', label: 'Link video esterno (https://…)', type: 'text' },
-            { name: 'releaseLabel', label: 'Etichetta di uscita', type: 'text' },
+            { name: 'youtube', label: 'ID video YouTube', type: 'text', half: true,
+              hint: 'Solo l’ID, es. da youtube.com/watch?v=ABC123 → ABC123' },
+            { name: 'video', label: 'Link video esterno (https://…)', type: 'text', half: true },
+            { name: 'releaseLabel', label: 'Etichetta di uscita (es. “In uscita · Agosto 2026”)', type: 'text' },
             { name: 'description', label: 'Descrizione', type: 'textarea' },
-            { name: 'order', label: 'Ordine (più basso = prima)', type: 'number' },
-            { name: 'draft', label: 'Bozza (non pubblicato)', type: 'checkbox' },
+            { name: 'draft', label: 'Salva come bozza (non pubblicato)', type: 'checkbox' },
           ],
         },
       };
 
       let currentType = 'news';
+      let currentSlug = '';
       const $ = (s) => document.querySelector(s);
-      const api = async (path, opts) => {
-        const r = await fetch(path, opts);
-        const data = await r.json().catch(() => ({}));
-        if (!r.ok) throw new Error(data.error || `Errore ${r.status}`);
-        return data;
-      };
       const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) =>
         ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+      async function api(path, opts) {
+        const r = await fetch(path, opts);
+        const d = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(d.error || `Errore ${r.status}`);
+        return d;
+      }
 
       async function init() {
         try {
@@ -138,25 +185,25 @@ export const prerender = true;
           $('#who').textContent = me.email;
           $('#gate').hidden = true;
           $('#app').hidden = false;
-          bindTabs();
+          document.querySelectorAll('.tab').forEach((t) =>
+            t.addEventListener('click', () => {
+              document.querySelectorAll('.tab').forEach((x) => x.classList.remove('active'));
+              t.classList.add('active');
+              currentType = t.dataset.type;
+              clearEditor();
+              loadList();
+            }));
           $('#newBtn').addEventListener('click', () => renderForm(null));
           loadList();
         } catch (e) {
-          $('#gate').innerHTML =
-            '<h2>Accesso non riuscito</h2><p>' + esc(e.message) +
-            '</p><p>Assicurati di aver effettuato il login (Cloudflare Access).</p>';
+          $('#gate').innerHTML = '<h2>Accesso non riuscito</h2><p>' + esc(e.message) +
+            '</p><p style="color:#7c857f;font-size:.9rem">Se hai già fatto il login, controlla che Cloudflare Access protegga anche il percorso <b>/api</b> (oltre a /admin) e che <b>CF_ACCESS_AUD</b> sia corretto.</p>';
         }
       }
 
-      function bindTabs() {
-        document.querySelectorAll('.tab').forEach((t) =>
-          t.addEventListener('click', () => {
-            document.querySelectorAll('.tab').forEach((x) => x.classList.remove('active'));
-            t.classList.add('active');
-            currentType = t.dataset.type;
-            $('#form').innerHTML = '<p class="empty">Seleziona un elemento o crea “Nuovo”.</p>';
-            loadList();
-          }));
+      function clearEditor() {
+        currentSlug = '';
+        $('#editor').innerHTML = '<p class="empty">Seleziona un elemento a sinistra oppure crea “Nuovo”.</p>';
       }
 
       async function loadList() {
@@ -164,13 +211,18 @@ export const prerender = true;
         list.innerHTML = '<p class="empty">Caricamento…</p>';
         try {
           const { items } = await api('/api/list?type=' + currentType);
-          if (!items.length) { list.innerHTML = '<p class="empty">Nessun elemento.</p>'; return; }
+          if (!items.length) { list.innerHTML = '<p class="empty">Nessun elemento. Crea il primo con “+ Nuovo”.</p>'; return; }
           list.innerHTML = '';
           for (const it of items) {
             const b = document.createElement('button');
-            const meta = currentType === 'news' ? (it.date || '') : (it.status || '');
-            b.innerHTML = '<div>' + esc(it.title || it.slug) + '</div><div class="meta">' +
-              esc(meta) + (it.draft ? ' · <span class="draft">bozza</span>' : '') + '</div>';
+            b.className = 'card' + (it.slug === currentSlug ? ' sel' : '');
+            const meta = currentType === 'news' ? (it.date || '') : (it.status === 'in-corso' ? 'In corso' : (it.releaseLabel || 'In uscita'));
+            const thumb = it.coverUrl
+              ? `<img src="${esc(it.coverUrl)}" alt="" loading="lazy" onerror="this.style.display='none'">`
+              : '🎬';
+            b.innerHTML = `<span class="thumb">${thumb}</span><span>` +
+              `<span class="ttl">${esc(it.title || it.slug)}</span>` +
+              `<span class="meta">${esc(meta)}${it.draft ? '<span class="badge draft">bozza</span>' : ''}</span></span>`;
             b.addEventListener('click', () => openEntry(it.slug));
             list.appendChild(b);
           }
@@ -187,41 +239,64 @@ export const prerender = true;
       function renderForm(entry) {
         const schema = SCHEMAS[currentType];
         const data = entry?.data || {};
-        const form = $('#form');
-        form.dataset.slug = entry?.slug || '';
-        let html = '<h2 style="margin-top:0">' + (entry ? 'Modifica' : 'Nuovo') + ' · ' + schema.label + '</h2>';
+        currentSlug = entry?.slug || '';
+        let rows = '';
+        let pending = [];
         for (const f of schema.fields) {
           const val = f.name === 'body' ? (entry?.body || '') : data[f.name];
-          html += renderField(f, val);
+          const html = renderField(f, val, entry?.coverUrl);
+          if (f.half) { pending.push(html); if (pending.length === 2) { rows += `<div class="grid2">${pending.join('')}</div>`; pending = []; } }
+          else { if (pending.length) { rows += `<div class="grid2">${pending.join('')}</div>`; pending = []; } rows += html; }
         }
-        html += '<div class="actions"><button type="submit" class="btn">Salva e pubblica</button>' +
-          '<span class="status" id="formStatus"></span></div>';
-        form.innerHTML = html;
+        if (pending.length) rows += `<div class="grid2">${pending.join('')}</div>`;
+
+        $('#editor').innerHTML =
+          `<h2>${entry ? 'Modifica' : 'Nuovo'} · ${schema.label}</h2>` +
+          `<form id="form">${rows}<div class="actions">` +
+          `<button type="submit" class="btn">Salva e pubblica</button>` +
+          `<span class="status" id="formStatus"></span>` +
+          (entry ? `<button type="button" class="btn-del" id="delBtn">Elimina</button>` : '') +
+          `</div></form>`;
+        const form = $('#form');
         form.querySelectorAll('input[type=file]').forEach(bindUpload);
+        form.querySelectorAll('.rm').forEach((btn) => btn.addEventListener('click', () => clearCover(btn.dataset.for)));
         form.onsubmit = onSave;
+        if (entry) $('#delBtn').addEventListener('click', () => onDelete(entry.slug));
+        document.querySelectorAll('.card').forEach((c) => c.classList.remove('sel'));
       }
 
-      function renderField(f, val) {
+      function renderField(f, val, coverUrl) {
         const id = 'f_' + f.name;
-        let inner = '';
+        const hint = f.hint ? `<div style="font-size:.75rem;color:var(--muted);margin-top:.2rem">${esc(f.hint)}</div>` : '';
+        let inner;
         if (f.type === 'textarea' || f.type === 'body')
           inner = `<textarea id="${id}" name="${f.name}">${esc(val)}</textarea>`;
         else if (f.type === 'checkbox')
-          inner = `<div class="row"><input type="checkbox" id="${id}" name="${f.name}" ${val ? 'checked' : ''}> <label for="${id}" style="text-transform:none">${esc(f.label)}</label></div>`;
+          return `<div class="field"><div class="check"><input type="checkbox" id="${id}" name="${f.name}" ${val ? 'checked' : ''}><label for="${id}">${esc(f.label)}</label></div></div>`;
         else if (f.type === 'select')
           inner = `<select id="${id}" name="${f.name}">` +
             f.options.map(([v, l]) => `<option value="${v}" ${val === v ? 'selected' : ''}>${esc(l)}</option>`).join('') + '</select>';
-        else if (f.type === 'image')
-          inner = `<input type="hidden" id="${id}" name="${f.name}" value="${esc(val || '')}">` +
-            `<input type="file" accept="image/*" data-target="${id}">` +
-            `<div id="${id}_prev">${val ? `<img class="cover-prev" src="https://github.com/formahub3d-cloud/centioniproduzioni/raw/main/${esc(String(val).replace(/^\//, ''))}" alt="">` : ''}</div>`;
-        else if (f.type === 'number')
+        else if (f.type === 'image') {
+          const prev = val ? `<img src="${esc(coverUrl || '')}" alt="">` : 'Nessuna';
+          return `<div class="field"><label>${esc(f.label)}</label><div class="cover">` +
+            `<span class="prev" id="${id}_prev">${prev}</span>` +
+            `<div><input type="hidden" id="${id}" name="${f.name}" value="${esc(val || '')}">` +
+            `<label class="filebtn">Carica immagine<input type="file" accept="image/*" data-target="${id}" hidden></label>` +
+            (val ? ` <button type="button" class="rm" data-for="${id}">rimuovi</button>` : '') +
+            `</div></div></div>`;
+        } else if (f.type === 'number')
           inner = `<input type="number" id="${id}" name="${f.name}" value="${esc(val ?? '')}">`;
         else
-          inner = `<input type="${f.type}" id="${id}" name="${f.name}" value="${esc(val ?? '')}" ${f.required ? 'required' : ''}>`;
+          inner = `<input type="text" id="${id}" name="${f.name}" value="${esc(val ?? '')}" ${f.required ? 'required' : ''}>`;
         const cls = f.type === 'body' ? 'field field--body' : 'field';
-        const lbl = f.type === 'checkbox' ? '' : `<label for="${id}">${esc(f.label)}${f.required ? ' *' : ''}</label>`;
-        return `<div class="${cls}">${lbl}${inner}</div>`;
+        return `<div class="${cls}"><label for="${id}">${esc(f.label)}${f.required ? ' *' : ''}</label>${inner}${hint}</div>`;
+      }
+
+      function clearCover(id) {
+        document.getElementById(id).value = '';
+        document.getElementById(id + '_prev').textContent = 'Nessuna';
+        const rm = document.querySelector(`.rm[data-for="${id}"]`);
+        if (rm) rm.remove();
       }
 
       function bindUpload(input) {
@@ -239,8 +314,8 @@ export const prerender = true;
             const target = document.getElementById(input.dataset.target);
             target.value = res.path;
             document.getElementById(input.dataset.target + '_prev').innerHTML =
-              `<img class="cover-prev" src="${URL.createObjectURL(file)}" alt="">`;
-            status.textContent = 'Immagine caricata.'; status.className = 'status ok';
+              `<img src="${URL.createObjectURL(file)}" alt="">`;
+            status.textContent = 'Immagine caricata ✓'; status.className = 'status ok';
           } catch (e) { status.textContent = e.message; status.className = 'status err'; }
         });
       }
@@ -268,17 +343,30 @@ export const prerender = true;
           else if (el.value !== '') data[f.name] = el.value;
         }
         status.textContent = 'Salvataggio…'; status.className = 'status';
-        form.querySelector('button[type=submit]').disabled = true;
+        const btn = form.querySelector('button[type=submit]'); btn.disabled = true;
         try {
           const res = await api('/api/save', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ type: currentType, slug: form.dataset.slug || undefined, data, body }),
+            body: JSON.stringify({ type: currentType, slug: currentSlug || undefined, data, body }),
           });
-          status.textContent = 'Salvato! Il sito si aggiorna tra 1–2 minuti.'; status.className = 'status ok';
-          form.dataset.slug = res.slug;
+          currentSlug = res.slug;
+          status.textContent = 'Salvato ✓ Il sito si aggiorna tra 1–2 minuti.'; status.className = 'status ok';
           loadList();
         } catch (e2) { status.textContent = e2.message; status.className = 'status err'; }
-        finally { form.querySelector('button[type=submit]').disabled = false; }
+        finally { btn.disabled = false; }
+      }
+
+      async function onDelete(slug) {
+        if (!confirm('Eliminare definitivamente questo elemento?')) return;
+        const status = $('#formStatus');
+        status.textContent = 'Elimino…'; status.className = 'status';
+        try {
+          await api('/api/delete', {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type: currentType, slug }),
+          });
+          clearEditor(); loadList();
+        } catch (e) { status.textContent = e.message; status.className = 'status err'; }
       }
 
       init();

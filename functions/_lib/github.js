@@ -22,6 +22,13 @@ function gh(env, path, init = {}) {
   });
 }
 
+/** URL raw (pubblico) di un file del repo, per l'anteprima nel pannello. */
+export function rawUrl(env, filePath) {
+  if (!filePath) return null;
+  const { repo, branch } = cfg(env);
+  return `https://raw.githubusercontent.com/${repo}/${branch}/${String(filePath).replace(/^\//, '')}`;
+}
+
 export function toBase64(str) {
   const bytes = new TextEncoder().encode(str);
   let bin = '';
@@ -61,5 +68,15 @@ export async function putFile(env, path, contentBase64, message, sha) {
     body: JSON.stringify(body),
   });
   if (!r.ok) throw new Error(`GitHub put ${r.status}: ${await r.text()}`);
+  return r.json();
+}
+
+export async function deleteFile(env, path, message, sha) {
+  const { repo, branch } = cfg(env);
+  const r = await gh(env, `/repos/${repo}/contents/${path}`, {
+    method: 'DELETE',
+    body: JSON.stringify({ message, branch, sha }),
+  });
+  if (!r.ok) throw new Error(`GitHub delete ${r.status}`);
   return r.json();
 }
