@@ -31,12 +31,15 @@ export const SITE = {
 /**
  * Contact form endpoint.
  * Uses Web3Forms (https://web3forms.com) — works on a fully static site with
- * just a free access key, no backend. Replace the access key in Fase 3.
+ * just a free access key, no backend.
+ *
+ * La access key va impostata come variabile di build su Cloudflare Pages
+ * (`PUBLIC_WEB3FORMS_KEY`), così non finisce hardcoded nel repo. Finché è vuota,
+ * il form invita a scrivere via email invece di fallire silenziosamente.
  */
 export const CONTACT = {
   endpoint: 'https://api.web3forms.com/submit',
-  // TODO (Fase 3): incollare qui la access key gratuita di Web3Forms.
-  accessKey: 'REPLACE_WITH_WEB3FORMS_ACCESS_KEY',
+  accessKey: import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '',
 } as const;
 
 /** Primary navigation — order matters. */
@@ -50,11 +53,16 @@ export const NAV: { label: string; href: string }[] = [
 
 /**
  * Social / external links (footer + Contatti).
- * Sostituire gli # con gli URL reali dei canali ufficiali.
+ *
+ * L'URL YouTube ha un default reale ma resta sovrascrivibile con la variabile
+ * di build `PUBLIC_YOUTUBE_URL` su Cloudflare Pages. Eventuali voci senza URL
+ * valido vengono filtrate (niente link morti).
  */
+const YOUTUBE_URL =
+  import.meta.env.PUBLIC_YOUTUBE_URL ?? 'https://www.youtube.com/channel/UC6533iFPsUI9mx7R8iBTwSg';
+
 export const SOCIAL: { label: string; href: string }[] = [
-  { label: 'Instagram', href: 'https://www.instagram.com/niccolocentioni_official' },
+  { label: 'Instagram', href: 'https://www.instagram.com/centioniproduzioni.it' },
   { label: 'Facebook', href: 'https://www.facebook.com/share/1BpVdDoW3f/' },
-  // TODO: inserire l'URL del canale YouTube ufficiale.
-  { label: 'YouTube', href: '#' },
-];
+  { label: 'YouTube', href: YOUTUBE_URL },
+].filter((s) => /^https?:\/\//.test(s.href));

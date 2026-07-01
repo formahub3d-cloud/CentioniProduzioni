@@ -32,10 +32,19 @@ Pages → progetto **centioniproduzioni** → **Settings → Environment variabl
 | Nome | Valore | Tipo |
 |---|---|---|
 | `GITHUB_TOKEN` | il token del punto 1 | **Secret** (Encrypt) |
+| `SESSION_SECRET` | una stringa lunga e casuale (32+ caratteri, es. da un password manager) | **Secret** (Encrypt) |
 | `CF_ACCESS_TEAM_DOMAIN` | `formahub3d.cloudflareaccess.com` | Plain |
 | `CF_ACCESS_AUD` | l'**Application Audience (AUD)** dell'app Access (punto 3) | Plain |
 
 *(Opzionali, hanno già un default: `GITHUB_REPO=formahub3d-cloud/centioniproduzioni`, `GITHUB_BRANCH=main`.)*
+
+> **`SESSION_SECRET` (login robusto).** Attiva il flusso di sessione first-party:
+> la pagina `/admin` (dietro Access) riceve un token firmato che la SPA usa per
+> chiamare `/cms/*`, senza dipendere dal cookie di Cloudflare Access — così il
+> salvataggio funziona anche sui browser che bloccano i cookie di terze parti.
+> Basta aggiungere questa variabile: **non serve toccare l'app Access né il DNS.**
+> Finché non è impostata, il pannello continua a usare `/api/*` (dietro Access)
+> come prima. Cambiando il valore si invalidano le sessioni aperte.
 
 Dopo aver aggiunto le variabili, **rifai un deploy** (un push o "Retry deployment")
 così le Functions le vedono.
@@ -77,7 +86,14 @@ Zero Trust → **Access → Applications → Add an application → Self-hosted*
 (rebuild automatico) il contenuto è online. I "Bozza" non vengono pubblicati.
 
 ## Come funziona (in breve)
-- Il pannello chiama `/api/*`; Cloudflare Access inietta il JWT dell'utente.
-- Le Functions verificano il JWT e usano `GITHUB_TOKEN` per scrivere il file
-  markdown (e le immagini in `src/assets/media/`) sul branch `main`.
+- Cloudflare Access protegge `/admin` (e `/api`): solo chi è autorizzato entra.
+- **Con `SESSION_SECRET`** (consigliato): all'apertura di `/admin` un middleware
+  verifica il JWT di Access e inietta nella pagina un **token di sessione**
+  firmato. La SPA lo invia negli header verso `/cms/*` (endpoint fuori da Access),
+  che verificano il token. Nessun cookie in gioco → login e salvataggio affidabili
+  su ogni browser.
+- **Senza `SESSION_SECRET`** (fallback): il pannello chiama `/api/*` e Cloudflare
+  Access inietta il JWT dell'utente, che le Functions verificano.
+- In entrambi i casi le Functions usano `GITHUB_TOKEN` per scrivere il markdown
+  (e le immagini in `src/assets/media/`) sul branch `main`.
 - Il push fa partire la build → deploy. Contenuti sempre in git, nessun lock-in.

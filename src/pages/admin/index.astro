@@ -11,24 +11,39 @@ export const prerender = true;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex, nofollow" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href="/fonts/fraunces-variable.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-variable.woff2" as="font" type="font/woff2" crossorigin />
     <title>Redazione — Centioni Produzioni</title>
     <style is:global>
+      /* Font del brand, self-hosted (identici a src/styles/global.css). */
+      @font-face {
+        font-family: 'Fraunces'; font-style: normal; font-weight: 300 700;
+        font-display: swap; src: url('/fonts/fraunces-variable.woff2') format('woff2');
+      }
+      @font-face {
+        font-family: 'Inter'; font-style: normal; font-weight: 100 900;
+        font-display: swap; src: url('/fonts/inter-variable.woff2') format('woff2');
+      }
       :root {
-        --teal: #176b7a; --teal-deep: #0f5663; --bg: #eeeae1; --surface: #fff;
-        --ink: #15323a; --soft: #4a5f65; --muted: #7c857f; --line: #e0dccf;
-        --ok: #2f8f6b; --err: #b23a2b; --radius: 10px;
-        --shadow: 0 1px 3px rgba(20,50,58,.06), 0 6px 20px rgba(20,50,58,.05);
+        /* Palette brand: petrol/teal su panna (come il sito). */
+        --teal: #176b7a; --teal-deep: #0f5663; --bg: #f1eee6; --surface: #f8f6ef;
+        --ink: #15323a; --soft: #43595f; --muted: #5b6661; --line: #ddd7c9;
+        --ok: #2f7d5e; --err: #b23a2b; --radius: 8px;
+        --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+        --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        --shadow: 0 1px 3px rgba(20,50,58,.06), 0 8px 24px rgba(20,50,58,.06);
       }
       * { box-sizing: border-box; }
       body { margin: 0; background: var(--bg); color: var(--ink);
-        font: 15px/1.5 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+        font-family: var(--font-sans); font-size: 15px; line-height: 1.55;
+        -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
       button { font: inherit; cursor: pointer; }
       /* top bar */
       .topbar { background: var(--teal); color: #fff; padding: .7rem 1.1rem;
         display: flex; align-items: center; gap: .7rem; position: sticky; top: 0; z-index: 10; }
       .topbar svg { display: block; }
-      .topbar .brand { font-weight: 700; letter-spacing: .01em; }
-      .topbar .brand small { display: block; font-weight: 500; font-size: .72rem; opacity: .8; letter-spacing: .04em; text-transform: uppercase; }
+      .topbar .brand { font-family: var(--font-display); font-weight: 500; font-size: 1.18rem; letter-spacing: .01em; line-height: 1; }
+      .topbar .brand small { display: block; font-family: var(--font-sans); font-weight: 600; font-size: .66rem; opacity: .85; letter-spacing: .12em; text-transform: uppercase; margin-top: .18rem; }
       .topbar .spacer { margin-left: auto; }
       .topbar .who { font-size: .85rem; opacity: .95; }
       .topbar .logout { color: #fff; font-size: .8rem; text-decoration: none; border: 1px solid rgba(255,255,255,.4);
@@ -65,7 +80,7 @@ export const prerender = true;
 
       .editor { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
         padding: 1.3rem; box-shadow: var(--shadow); }
-      .editor h2 { margin: 0 0 1rem; font-size: 1.15rem; }
+      .editor h2 { margin: 0 0 1.1rem; font-family: var(--font-display); font-weight: 500; font-size: 1.4rem; letter-spacing: -.01em; }
       .field { margin-bottom: 1rem; }
       .field > label { display: block; font-size: .76rem; font-weight: 700; color: var(--soft);
         text-transform: uppercase; letter-spacing: .04em; margin-bottom: .3rem; }
@@ -96,12 +111,14 @@ export const prerender = true;
       .btn-del { margin-left: auto; background: none; color: var(--err); border: 1px solid var(--line); border-radius: 8px; padding: .55rem 1rem; font-weight: 600; }
       .btn-del:hover { border-color: var(--err); }
       .status { font-size: .88rem; min-height: 1.2em; }
-      .status.ok { color: var(--ok); font-weight: 600; }
-      .status.err { color: var(--err); font-weight: 600; }
+      .status.ok, .status.err { display: inline-flex; align-items: center; gap: .4rem;
+        padding: .38rem .7rem; border-radius: 7px; font-weight: 600; }
+      .status.ok { color: var(--ok); background: color-mix(in srgb, var(--ok) 13%, transparent); }
+      .status.err { color: var(--err); background: color-mix(in srgb, var(--err) 13%, transparent); }
       .empty { color: var(--muted); font-size: .9rem; padding: .5rem 0; }
       .gate { max-width: 34rem; margin: 4rem auto; text-align: center; padding: 1.5rem;
         background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
-      .gate h2 { margin-top: 0; }
+      .gate h2 { margin-top: 0; font-family: var(--font-display); font-weight: 500; font-size: 1.5rem; }
     </style>
   </head>
   <body>
@@ -172,8 +189,15 @@ export const prerender = true;
       const $ = (s) => document.querySelector(s);
       const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) =>
         ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-      async function api(path, opts) {
-        const r = await fetch(path, opts);
+      // Se la pagina è servita con un token di sessione (SESSION_SECRET
+      // configurato), parliamo con /cms/* passando il token negli header:
+      // nessuna dipendenza dal cookie di Access. Altrimenti /api/* (via Access).
+      const TOKEN = document.querySelector('meta[name="cms-token"]')?.content || '';
+      const BASE = TOKEN ? '/cms' : '/api';
+      async function api(path, opts = {}) {
+        const headers = { ...(opts.headers || {}) };
+        if (TOKEN) headers.Authorization = 'Bearer ' + TOKEN;
+        const r = await fetch(BASE + path, { ...opts, headers });
         const d = await r.json().catch(() => ({}));
         if (!r.ok) throw new Error(d.error || `Errore ${r.status}`);
         return d;
@@ -181,7 +205,7 @@ export const prerender = true;
 
       async function init() {
         try {
-          const me = await api('/api/me');
+          const me = await api('/me');
           $('#who').textContent = me.email;
           $('#gate').hidden = true;
           $('#app').hidden = false;
@@ -197,7 +221,7 @@ export const prerender = true;
           loadList();
         } catch (e) {
           $('#gate').innerHTML = '<h2>Accesso non riuscito</h2><p>' + esc(e.message) +
-            '</p><p style="color:#7c857f;font-size:.9rem">Se hai già fatto il login, controlla che Cloudflare Access protegga anche il percorso <b>/api</b> (oltre a /admin) e che <b>CF_ACCESS_AUD</b> sia corretto.</p>';
+            '</p><p style="color:#7c857f;font-size:.9rem">Se hai già fatto il login, ricarica la pagina. Se il problema persiste, verifica le variabili su Cloudflare Pages (<b>SESSION_SECRET</b> per /cms, oppure <b>CF_ACCESS_AUD</b> per /api) e che l\'app Access protegga <b>/admin</b>.</p>';
         }
       }
 
@@ -210,7 +234,7 @@ export const prerender = true;
         const list = $('#list');
         list.innerHTML = '<p class="empty">Caricamento…</p>';
         try {
-          const { items } = await api('/api/list?type=' + currentType);
+          const { items } = await api('/list?type=' + currentType);
           if (!items.length) { list.innerHTML = '<p class="empty">Nessun elemento. Crea il primo con “+ Nuovo”.</p>'; return; }
           list.innerHTML = '';
           for (const it of items) {
@@ -231,7 +255,7 @@ export const prerender = true;
 
       async function openEntry(slug) {
         try {
-          const res = await api(`/api/entry?type=${currentType}&slug=${encodeURIComponent(slug)}`);
+          const res = await api(`/entry?type=${currentType}&slug=${encodeURIComponent(slug)}`);
           renderForm({ slug, ...res });
         } catch (e) { alert(e.message); }
       }
@@ -307,7 +331,7 @@ export const prerender = true;
           status.textContent = 'Carico immagine…'; status.className = 'status';
           try {
             const dataBase64 = await fileToBase64(file);
-            const res = await api('/api/upload', {
+            const res = await api('/upload', {
               method: 'POST', headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ filename: file.name, dataBase64 }),
             });
@@ -345,7 +369,7 @@ export const prerender = true;
         status.textContent = 'Salvataggio…'; status.className = 'status';
         const btn = form.querySelector('button[type=submit]'); btn.disabled = true;
         try {
-          const res = await api('/api/save', {
+          const res = await api('/save', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type: currentType, slug: currentSlug || undefined, data, body }),
           });
@@ -361,7 +385,7 @@ export const prerender = true;
         const status = $('#formStatus');
         status.textContent = 'Elimino…'; status.className = 'status';
         try {
-          await api('/api/delete', {
+          await api('/delete', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type: currentType, slug }),
           });
