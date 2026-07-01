@@ -54,14 +54,15 @@ export const NAV: { label: string; href: string }[] = [
 /**
  * Social / external links (footer + Contatti).
  *
- * L'URL del canale YouTube ufficiale va impostato come variabile di build su
- * Cloudflare Pages (`PUBLIC_YOUTUBE_URL`) o incollato qui. Finché è vuoto, il
- * link YouTube non viene mostrato — niente link morto (href="#").
+ * L'URL YouTube ha un default reale ma resta sovrascrivibile con la variabile
+ * di build `PUBLIC_YOUTUBE_URL` su Cloudflare Pages. Eventuali voci senza URL
+ * valido vengono filtrate (niente link morti).
  */
-const YOUTUBE_URL = import.meta.env.PUBLIC_YOUTUBE_URL ?? '';
+const YOUTUBE_URL =
+  import.meta.env.PUBLIC_YOUTUBE_URL ?? 'https://www.youtube.com/channel/UC6533iFPsUI9mx7R8iBTwSg';
 
 export const SOCIAL: { label: string; href: string }[] = [
-  { label: 'Instagram', href: 'https://www.instagram.com/niccolocentioni_official' },
+  { label: 'Instagram', href: 'https://www.instagram.com/centioniproduzioni.it' },
   { label: 'Facebook', href: 'https://www.facebook.com/share/1BpVdDoW3f/' },
   { label: 'YouTube', href: YOUTUBE_URL },
 ].filter((s) => /^https?:\/\//.test(s.href));
