@@ -172,8 +172,15 @@ export const prerender = true;
       const $ = (s) => document.querySelector(s);
       const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) =>
         ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-      async function api(path, opts) {
-        const r = await fetch(path, opts);
+      // Se la pagina è servita con un token di sessione (SESSION_SECRET
+      // configurato), parliamo con /cms/* passando il token negli header:
+      // nessuna dipendenza dal cookie di Access. Altrimenti /api/* (via Access).
+      const TOKEN = document.querySelector('meta[name="cms-token"]')?.content || '';
+      const BASE = TOKEN ? '/cms' : '/api';
+      async function api(path, opts = {}) {
+        const headers = { ...(opts.headers || {}) };
+        if (TOKEN) headers.Authorization = 'Bearer ' + TOKEN;
+        const r = await fetch(BASE + path, { ...opts, headers });
         const d = await r.json().catch(() => ({}));
         if (!r.ok) throw new Error(d.error || `Errore ${r.status}`);
         return d;
@@ -181,7 +188,7 @@ export const prerender = true;
 
       async function init() {
         try {
-          const me = await api('/api/me');
+          const me = await api('/me');
           $('#who').textContent = me.email;
           $('#gate').hidden = true;
           $('#app').hidden = false;
@@ -197,7 +204,7 @@ export const prerender = true;
           loadList();
         } catch (e) {
           $('#gate').innerHTML = '<h2>Accesso non riuscito</h2><p>' + esc(e.message) +
-            '</p><p style="color:#7c857f;font-size:.9rem">Se hai già fatto il login, controlla che Cloudflare Access protegga anche il percorso <b>/api</b> (oltre a /admin) e che <b>CF_ACCESS_AUD</b> sia corretto.</p>';
+            '</p><p style="color:#7c857f;font-size:.9rem">Se hai già fatto il login, ricarica la pagina. Se il problema persiste, verifica le variabili su Cloudflare Pages (<b>SESSION_SECRET</b> per /cms, oppure <b>CF_ACCESS_AUD</b> per /api) e che l\'app Access protegga <b>/admin</b>.</p>';
         }
       }
 
@@ -210,7 +217,7 @@ export const prerender = true;
         const list = $('#list');
         list.innerHTML = '<p class="empty">Caricamento…</p>';
         try {
-          const { items } = await api('/api/list?type=' + currentType);
+          const { items } = await api('/list?type=' + currentType);
           if (!items.length) { list.innerHTML = '<p class="empty">Nessun elemento. Crea il primo con “+ Nuovo”.</p>'; return; }
           list.innerHTML = '';
           for (const it of items) {
@@ -231,7 +238,7 @@ export const prerender = true;
 
       async function openEntry(slug) {
         try {
-          const res = await api(`/api/entry?type=${currentType}&slug=${encodeURIComponent(slug)}`);
+          const res = await api(`/entry?type=${currentType}&slug=${encodeURIComponent(slug)}`);
           renderForm({ slug, ...res });
         } catch (e) { alert(e.message); }
       }
@@ -307,7 +314,7 @@ export const prerender = true;
           status.textContent = 'Carico immagine…'; status.className = 'status';
           try {
             const dataBase64 = await fileToBase64(file);
-            const res = await api('/api/upload', {
+            const res = await api('/upload', {
               method: 'POST', headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ filename: file.name, dataBase64 }),
             });
@@ -345,7 +352,7 @@ export const prerender = true;
         status.textContent = 'Salvataggio…'; status.className = 'status';
         const btn = form.querySelector('button[type=submit]'); btn.disabled = true;
         try {
-          const res = await api('/api/save', {
+          const res = await api('/save', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type: currentType, slug: currentSlug || undefined, data, body }),
           });
@@ -361,7 +368,7 @@ export const prerender = true;
         const status = $('#formStatus');
         status.textContent = 'Elimino…'; status.className = 'status';
         try {
-          await api('/api/delete', {
+          await api('/delete', {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type: currentType, slug }),
           });

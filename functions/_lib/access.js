@@ -72,3 +72,8 @@ export function json(data, status = 200) {
     headers: { 'Content-Type': 'application/json; charset=utf-8' },
   });
 }
+
+/** Mappa un errore a uno status HTTP: `.status` esplicito, o 401 se è di auth. */
+export function errStatus(e) {
+  return e.status || (/autentic|token|sessione|audience|firma|scadut/i.test(e.message) ? 401 : 500);
+}
