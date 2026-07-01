@@ -2,6 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE, SOCIAL, CONTACT } from '../data/site.ts';
 
+// Finché la access key di Web3Forms non è configurata, il form invita a
+// scrivere via email invece di inviare una richiesta destinata a fallire.
+const hasKey = Boolean(CONTACT.accessKey);
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ContactPage',
@@ -36,7 +40,14 @@ const breadcrumb = {
   </section>
 
   <section class="wrap contact">
-    <form id="contact-form" class="form reveal" method="POST" action={CONTACT.endpoint}>
+    <form
+      id="contact-form"
+      class="form reveal"
+      method="POST"
+      action={CONTACT.endpoint}
+      data-haskey={String(hasKey)}
+      data-email={SITE.email}
+    >
       <input type="hidden" name="access_key" value={CONTACT.accessKey} />
       <input type="hidden" name="from_name" value={SITE.name} />
       <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
@@ -99,6 +110,12 @@ const breadcrumb = {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!status || !btn) return;
+      if (form.dataset.haskey !== 'true') {
+        status.textContent =
+          'Modulo non ancora attivo: scrivici direttamente a ' + (form.dataset.email || '') + '.';
+        status.className = 'form__status';
+        return;
+      }
       status.textContent = 'Invio in corso…';
       status.className = 'form__status';
       btn.disabled = true;
