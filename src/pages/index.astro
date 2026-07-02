@@ -39,7 +39,8 @@ const news = (await getCollection('news', ({ data }) => !data.draft))
   {
     slides.length > 0 && (
       <section class="wrap hero__media reveal">
-        <Slider slides={slides} />
+        {/* captions off: i titoli sono già nelle copertine placeholder */}
+        <Slider slides={slides} captions={false} />
       </section>
     )
   }
@@ -98,6 +99,14 @@ const news = (await getCollection('news', ({ data }) => !data.draft))
     font-size: var(--step-4);
     margin-top: var(--space-2);
     line-height: 0.98;
+  }
+  /* Inchiostro sfumato: dal petrol scuro al teal del brand, statico. */
+  .hero__title .line > span {
+    background: linear-gradient(165deg, var(--color-ink) 45%, var(--color-accent) 130%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-bottom: 0.08em; /* evita il taglio dei discendenti col clip */
   }
   .hero__lead {
     margin-top: var(--space-3);

@@ -8,9 +8,11 @@ interface Slide {
 }
 interface Props {
   slides: Slide[];
+  /** Didascalia in sovraimpressione. Off finché le copertine hanno già il titolo. */
+  captions?: boolean;
 }
 
-const { slides } = Astro.props;
+const { slides, captions = true } = Astro.props;
 // Tuned for 3–5 highlights; each slide is shown ~one fifth of the loop.
 const dur = slides.length * 3.6;
 ---
@@ -33,7 +35,7 @@ const dur = slides.length * 3.6;
           loading={i === 0 ? 'eager' : 'lazy'}
           fetchpriority={i === 0 ? 'high' : undefined}
         />
-        {s.label && <figcaption class="slide__cap">{s.label}</figcaption>}
+        {captions && s.label && <figcaption class="slide__cap">{s.label}</figcaption>}
       </figure>
     ))
   }
