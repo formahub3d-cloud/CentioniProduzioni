@@ -52,7 +52,6 @@ const props = Astro.props;
       crossorigin
     />
     <SEO {...props} />
-    <Analytics />
     <ClientRouter />
   </head>
   <body>
@@ -62,6 +61,7 @@ const props = Astro.props;
       <slot />
     </main>
     <Footer />
+    <Analytics />
 
     <script>
       // Soft scroll-reveal — progressive enhancement, no library.

@@ -2,7 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../data/site.ts';
 
-const updated = '30 giugno 2026';
+const updated = '2 luglio 2026';
+const hasGA = Boolean(import.meta.env.PUBLIC_GA_ID);
 ---
 
 <BaseLayout
@@ -35,18 +36,40 @@ const updated = '30 giugno 2026';
     </p>
 
     <h2>Statistiche di traffico</h2>
-    <p>
-      Utilizziamo <strong>Cloudflare Web Analytics</strong>, una soluzione
-      <strong>senza cookie</strong> e in forma aggregata, che non profila i
-      visitatori e non raccoglie dati personali identificativi. Per questo il
-      sito non mostra banner di consenso ai cookie.
-    </p>
+    {hasGA ? (
+      <p>
+        Utilizziamo <strong>Google Analytics 4</strong> per capire, in forma
+        statistica, come viene usato il sito. Lo strumento si attiva
+        <strong>solo dopo il tuo consenso</strong>, espresso tramite il banner:
+        prima della tua scelta nessun dato viene inviato a Google e nessun
+        cookie di misurazione viene installato. Le funzioni pubblicitarie sono
+        disattivate. Se rifiuti, il sito funziona esattamente allo stesso modo.
+      </p>
+    ) : (
+      <p>
+        Il sito non utilizza al momento strumenti di analisi del traffico che
+        richiedano consenso.
+      </p>
+    )}
 
     <h2>Cookie</h2>
     <p>
-      Questo sito <strong>non utilizza cookie di profilazione o di
-      tracciamento</strong>.
+      Questo sito <strong>non utilizza cookie di profilazione</strong>.
+      {hasGA && (
+        <>
+          I soli cookie tecnici di misurazione (Google Analytics) vengono
+          installati dopo il tuo consenso. La tua scelta è memorizzata nel
+          browser e puoi cambiarla quando vuoi:
+        </>
+      )}
     </p>
+    {hasGA && (
+      <p>
+        <button type="button" class="btn btn--ghost" id="consent-manage">
+          Gestisci preferenze cookie
+        </button>
+      </p>
+    )}
 
     <h2>Hosting e contenuti esterni</h2>
     <p>
@@ -65,6 +88,24 @@ const updated = '30 giugno 2026';
     </p>
   </section>
 </BaseLayout>
+
+<script>
+  // "Gestisci preferenze cookie": azzera la scelta e ricarica la pagina,
+  // così il banner di consenso riappare.
+  function initManage() {
+    const btn = document.querySelector<HTMLButtonElement>('#consent-manage');
+    if (!btn || btn.dataset.ready) return;
+    btn.dataset.ready = 'true';
+    btn.addEventListener('click', () => {
+      try {
+        localStorage.removeItem('cp-consent');
+      } catch {}
+      location.reload();
+    });
+  }
+  initManage();
+  document.addEventListener('astro:page-load', initManage);
+</script>
 
 <style>
   .page-head {

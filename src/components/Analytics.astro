@@ -1,31 +1,133 @@
 ---
 /**
- * Google Analytics 4 — attivo solo se la variabile di build `PUBLIC_GA_ID`
- * (Measurement ID, es. "G-XXXXXXXXXX") è impostata su Cloudflare Pages.
- * Senza variabile il componente non emette nulla: zero JS in più.
+ * Google Analytics 4 + banner di consenso (GDPR/Garante).
  *
- * Lo script è processato da Astro (file esterno), così resta compatibile con
- * la CSP `script-src 'self' https://www.googletagmanager.com` (public/_headers).
+ * - Attivo solo se la variabile di build `PUBLIC_GA_ID` è impostata:
+ *   senza variabile non emette nulla (né script né banner).
+ * - gtag NON parte finché l'utente non accetta: nessun cookie prima del
+ *   consenso. La scelta (accetta/rifiuta) è salvata in localStorage e può
+ *   essere cambiata dalla pagina Privacy (bottone "Gestisci preferenze").
+ * - Script processato da Astro (file esterno): compatibile con la CSP.
  */
 const GA_ID = import.meta.env.PUBLIC_GA_ID ?? '';
 ---
 
 {GA_ID && (
-  <script>
-    const id = import.meta.env.PUBLIC_GA_ID;
-    if (id && import.meta.env.PROD) {
-      const s = document.createElement('script');
-      s.src = `https://www.googletagmanager.com/gtag/js?id=${id}`;
-      s.async = true;
-      document.head.appendChild(s);
-      // @ts-ignore — API globale di gtag
-      window.dataLayer = window.dataLayer || [];
-      // @ts-ignore
-      function gtag(...args) { window.dataLayer.push(arguments); }
-      // @ts-ignore
-      window.gtag = gtag;
-      gtag('js', new Date());
-      gtag('config', id);
-    }
-  </script>
+  <>
+    <div class="consent" id="consent-banner" role="region" aria-label="Preferenze sui cookie" hidden>
+      <p class="consent__text">
+        Usiamo <strong>Google Analytics</strong> per capire come viene usato il
+        sito, solo se acconsenti. Nessun dato prima della tua scelta —
+        dettagli nella <a href="/privacy">privacy</a>.
+      </p>
+      <div class="consent__actions">
+        <button type="button" class="btn" id="consent-accept">Accetta</button>
+        <button type="button" class="btn btn--ghost" id="consent-reject">Rifiuta</button>
+      </div>
+    </div>
+
+    <script>
+      const GA_ID = import.meta.env.PUBLIC_GA_ID;
+      const KEY = 'cp-consent';
+
+      function loadGA() {
+        // @ts-ignore — bootstrap standard di gtag
+        if (window.__gaLoaded) return;
+        // @ts-ignore
+        window.__gaLoaded = true;
+        // @ts-ignore
+        window.dataLayer = window.dataLayer || [];
+        // @ts-ignore
+        function gtag() { window.dataLayer.push(arguments); }
+        // @ts-ignore
+        window.gtag = gtag;
+        // Consent Mode v2: solo statistiche; ads sempre negati.
+        // @ts-ignore
+        gtag('consent', 'default', {
+          ad_storage: 'denied',
+          ad_user_data: 'denied',
+          ad_personalization: 'denied',
+          analytics_storage: 'granted',
+        });
+        // @ts-ignore
+        gtag('js', new Date());
+        // @ts-ignore
+        gtag('config', GA_ID);
+        const s = document.createElement('script');
+        s.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`;
+        s.async = true;
+        document.head.appendChild(s);
+      }
+
+      function initConsent() {
+        const banner = document.querySelector<HTMLElement>('#consent-banner');
+        if (!banner || banner.dataset.ready) return;
+        banner.dataset.ready = 'true';
+
+        let choice = null;
+        try { choice = localStorage.getItem(KEY); } catch {}
+
+        if (choice === 'granted') { loadGA(); return; }
+        if (choice === 'denied') return;
+
+        banner.hidden = false;
+        const done = (value: string) => {
+          try { localStorage.setItem(KEY, value); } catch {}
+          banner.hidden = true;
+          if (value === 'granted') loadGA();
+        };
+        banner.querySelector('#consent-accept')?.addEventListener('click', () => done('granted'));
+        banner.querySelector('#consent-reject')?.addEventListener('click', () => done('denied'));
+      }
+
+      initConsent();
+      document.addEventListener('astro:page-load', initConsent);
+    </script>
+
+    <style>
+      /* l'attributo hidden deve vincere sul display: grid */
+      .consent[hidden] {
+        display: none;
+      }
+      .consent {
+        position: fixed;
+        inset-inline: var(--space-2);
+        bottom: var(--space-2);
+        z-index: 60;
+        max-width: 34rem;
+        margin-inline: auto;
+        display: grid;
+        gap: var(--space-2);
+        padding: var(--space-3);
+        background: var(--color-surface);
+        color: var(--color-ink);
+        border: 1px solid var(--color-line);
+        border-radius: var(--radius);
+        box-shadow: 0 10px 40px rgb(21 50 58 / 0.18);
+        animation: consent-in 0.5s var(--ease) both;
+      }
+      @keyframes consent-in {
+        from { opacity: 0; transform: translateY(0.75rem); }
+        to { opacity: 1; transform: none; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .consent { animation: none; }
+      }
+      .consent__text {
+        font-size: var(--step--1);
+        color: var(--color-ink-soft);
+      }
+      .consent__text a {
+        color: var(--color-accent);
+      }
+      .consent__actions {
+        display: flex;
+        gap: var(--space-2);
+        flex-wrap: wrap;
+      }
+      .consent__actions .btn {
+        flex: 1 1 8rem;
+      }
+    </style>
+  </>
 )}
