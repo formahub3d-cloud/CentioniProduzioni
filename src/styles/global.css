@@ -159,6 +159,16 @@ a:hover {
   font-weight: 600;
 }
 
+/* Tracking-in: l'eyebrow "si assesta" mentre appare (solo con .reveal). */
+.eyebrow.reveal {
+  letter-spacing: 0.34em;
+  transition-property: opacity, transform, letter-spacing;
+  transition-duration: calc(var(--dur) * 1.5);
+}
+.eyebrow.reveal.is-visible {
+  letter-spacing: 0.16em;
+}
+
 .main {
   flex: 1 0 auto;
 }
