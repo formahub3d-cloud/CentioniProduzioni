@@ -85,20 +85,26 @@ Contenuti:
 
 ---
 
-## 4) Form contatti — Web3Forms 🧑
+## 4) Form contatti — Web3Forms 🧑 — ✅ configurato
 
-Il form invia le email tramite **Web3Forms** (gratis, nessun backend). La
-chiave NON va nel codice: è una **variabile di build** su Cloudflare Pages.
+Il form invia le email tramite **Web3Forms** (gratis, nessun backend).
 
-1. Vai su **web3forms.com**, inserisci `info@centioniproduzioni.it`
-   e ottieni la **Access Key** (arriva anche via email).
-2. Cloudflare Dashboard → **Workers & Pages** → progetto del sito →
-   **Settings → Environment variables → Production → Add variable**:
-   - nome: `PUBLIC_WEB3FORMS_KEY` · valore: la Access Key.
-3. **Deployments → ⋯ → Retry deployment** sull'ultimo deploy: la variabile
-   entra nel sito solo con una nuova build.
-4. Verifica su `/contatti`: il form non deve più mostrare l'avviso
-   "modulo non ancora attivo" e l'invio di prova deve arrivare via email.
+> ⚠️ **Le variabili `PUBLIC_*` vanno su GitHub, NON su Cloudflare.**
+> La build del sito gira su GitHub Actions (`.github/workflows/deploy.yml`)
+> e le variabili entrano nell'HTML in quel momento: una variabile impostata
+> solo su Cloudflare Pages non ha alcun effetto.
+
+**Stato attuale**: chiave creata con `centioniproduzioni@gmail.com` (i
+messaggi del form arrivano lì), variabile `PUBLIC_WEB3FORMS_KEY` impostata
+su GitHub, invio verificato end-to-end.
+
+Per cambiare chiave o email di destinazione:
+1. Nuova **Access Key** su **web3forms.com** con l'email desiderata.
+2. GitHub → repository → **Settings → Secrets and variables → Actions →
+   Variables** → aggiorna `PUBLIC_WEB3FORMS_KEY`.
+3. Rilancia il deploy: **Actions → Deploy to Cloudflare Pages → Run
+   workflow** (o un push su `main`).
+4. Verifica su `/contatti` con un invio di prova.
 
 > Finché la variabile manca, il form invita a scrivere via email (nessun
 > errore silenzioso).
@@ -115,11 +121,12 @@ variabile di build `PUBLIC_GA_ID` (senza variabile: zero script in più).
 2. Crea uno **stream Web** per `https://centioniproduzioni.it` e copia il
    **Measurement ID** (formato `G-XXXXXXXXXX`). Non serve installare alcun
    tag manualmente.
-3. Cloudflare Dashboard → **Workers & Pages** → progetto del sito →
-   **Settings → Environment variables → Production → Add variable**:
+3. GitHub → repository → **Settings → Secrets and variables → Actions →
+   Variables → New repository variable**:
    - nome: `PUBLIC_GA_ID` · valore: il Measurement ID.
-4. **Deployments → ⋯ → Retry deployment**, poi verifica in GA4 →
-   **Reports → Realtime** visitando il sito.
+4. Rilancia il deploy (**Actions → Deploy to Cloudflare Pages → Run
+   workflow**), poi verifica in GA4 → **Reports → Realtime** visitando
+   il sito.
 
 > ⚠️ Nota privacy: GA4 usa cookie/identificatori → per la normativa italiana
 > serve un banner di consenso. In alternativa **Cloudflare Web Analytics**
