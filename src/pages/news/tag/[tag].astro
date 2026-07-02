@@ -43,7 +43,7 @@ const { tag, posts } = Astro.props;
 
   <section class="wrap">
     <div class="stack">
-      {posts.map((post) => <PostCard post={post} />)}
+      {posts.map((post) => <PostCard post={post} headingLevel="h2" />)}
     </div>
     <p class="back">
       <a href="/news" class="link-arrow"><span aria-hidden="true">←</span> Tutte le news</a>

@@ -45,7 +45,7 @@ const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort((a, b) =>
       posts.length > 0 ? (
         <div class="stack">
           {posts.map((post) => (
-            <PostCard post={post} />
+            <PostCard post={post} headingLevel="h2" />
           ))}
         </div>
       ) : (

@@ -5,9 +5,11 @@ import FormattedDate from './FormattedDate.astro';
 
 interface Props {
   post: CollectionEntry<'news'>;
+  /** Livello del titolo della card, in base alla gerarchia della pagina ospite. */
+  headingLevel?: 'h2' | 'h3';
 }
 
-const { post } = Astro.props;
+const { post, headingLevel: Heading = 'h3' } = Astro.props;
 const { title, date, cover, excerpt, tags } = post.data;
 ---
 
@@ -32,7 +34,7 @@ const { title, date, cover, excerpt, tags } = post.data;
         <FormattedDate date={date} />
         {tags.length > 0 && <span class="post-card__tag">{tags[0]}</span>}
       </div>
-      <h3 class="post-card__title">{title}</h3>
+      <Heading class="post-card__title">{title}</Heading>
       <p class="post-card__excerpt">{excerpt}</p>
       <span class="link-arrow">Leggi <span aria-hidden="true">→</span></span>
     </div>
