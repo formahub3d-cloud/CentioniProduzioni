@@ -30,6 +30,8 @@ jobs:
 
       - name: Build (Astro static -> dist/)
         run: npm run build
+        env:
+          PUBLIC_WEB3FORMS_KEY: ${{ vars.PUBLIC_WEB3FORMS_KEY }}
 
       - name: Ensure Pages project exists
         run: npx wrangler@4 pages project create centioniproduzioni --production-branch=main || true
