@@ -82,6 +82,26 @@ export async function deleteEntry(env, email, payload) {
   return { ok: true };
 }
 
+// Solo formati immagine che Astro/sharp elabora in build; niente file eseguibili.
+const ALLOWED_EXT = new Set(['jpg', 'jpeg', 'png', 'webp', 'avif']);
+const MAX_UPLOAD_BYTES = 8 * 1024 * 1024; // 8 MB (il pannello comprime prima dell'invio)
+
+/** Controlla i magic bytes: il contenuto deve essere davvero un'immagine ammessa. */
+function sniffImage(dataBase64) {
+  let head;
+  try {
+    head = Uint8Array.from(atob(dataBase64.slice(0, 24)), (c) => c.charCodeAt(0));
+  } catch {
+    return false;
+  }
+  const ascii = (from, to) => String.fromCharCode(...head.slice(from, to));
+  if (head[0] === 0xff && head[1] === 0xd8 && head[2] === 0xff) return true; // JPEG
+  if (head[0] === 0x89 && ascii(1, 4) === 'PNG') return true; // PNG
+  if (ascii(0, 4) === 'RIFF' && ascii(8, 12) === 'WEBP') return true; // WebP
+  if (ascii(4, 8) === 'ftyp' && /^avi[fs]/.test(ascii(8, 12))) return true; // AVIF
+  return false;
+}
+
 export async function uploadMedia(env, email, payload) {
   const { filename, dataBase64 } = payload;
   if (!filename || !dataBase64) throw bad('File mancante');
@@ -92,6 +112,12 @@ export async function uploadMedia(env, email, payload) {
   const base = slugify(dot > -1 ? filename.slice(0, dot) : filename) || 'immagine';
   const name = `${base}.${ext}`;
   const path = `${MEDIA_DIR}/${name}`;
+
+  if (!ALLOWED_EXT.has(ext)) throw bad('Formato non supportato: usa JPG, PNG, WebP o AVIF');
+  if (dataBase64.length * 0.75 > MAX_UPLOAD_BYTES) {
+    throw bad('Immagine troppo grande (max 8 MB)', 413);
+  }
+  if (!sniffImage(dataBase64)) throw bad('Il file non è un\'immagine valida (JPG, PNG, WebP o AVIF)');
 
   const existing = await getFile(env, path);
   await putFile(env, path, dataBase64, `Carica immagine: ${name} (via /admin, ${email})`, existing?.sha);
