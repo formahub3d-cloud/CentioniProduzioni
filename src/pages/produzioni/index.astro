@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { Picture } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import LiteYouTube from '../../components/LiteYouTube.astro';
 import ProduzioneCard from '../../components/ProduzioneCard.astro';
@@ -66,6 +67,17 @@ const videos = inCorso
                 <a class="btn" href={p.data.video} target="_blank" rel="noopener">
                   Guarda il video ↗
                 </a>
+              ) : p.data.cover ? (
+                <div class="feature__media">
+                  <Picture
+                    src={p.data.cover}
+                    formats={['avif', 'webp']}
+                    alt={`Copertina di ${p.data.title}`}
+                    widths={[600, 1000, 1280]}
+                    sizes="(min-width: 60rem) 60rem, 100vw"
+                    loading="lazy"
+                  />
+                </div>
               ) : null}
               {p.data.description && <p class="feature__desc">{p.data.description}</p>}
             </article>
@@ -78,7 +90,7 @@ const videos = inCorso
   {
     inUscita.length > 0 && (
       <section class="wrap section">
-        <h2 class="sub reveal">In uscita · Agosto 2026</h2>
+        <h2 class="sub reveal">In uscita</h2>
         <div class="soon-grid">
           {inUscita.map((p, i) => (
             <ProduzioneCard produzione={p} index={i % 3} />
@@ -133,6 +145,17 @@ const videos = inCorso
     border-radius: 100px;
     background: var(--color-accent);
     color: #fff;
+  }
+  .feature__media {
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--color-ink);
+  }
+  .feature__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
   }
   .feature__desc {
     margin-top: var(--space-2);

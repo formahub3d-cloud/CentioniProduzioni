@@ -85,16 +85,53 @@ Contenuti:
 
 ---
 
-## 4) Form contatti — Web3Forms 🧑
+## 4) Form contatti — Web3Forms 🧑 — ✅ configurato
 
-Il form invia le email tramite **Web3Forms** (gratis, nessun backend):
+Il form invia le email tramite **Web3Forms** (gratis, nessun backend).
 
-1. Vai su **web3forms.com**, inserisci la mail su cui vuoi ricevere i messaggi
-   e ottieni la **Access Key**.
-2. Incolla la chiave in `src/data/site.ts` → `CONTACT.accessKey`.
-3. Commit + push. Il form è subito funzionante.
+> ⚠️ **Le variabili `PUBLIC_*` vanno su GitHub, NON su Cloudflare.**
+> La build del sito gira su GitHub Actions (`.github/workflows/deploy.yml`)
+> e le variabili entrano nell'HTML in quel momento: una variabile impostata
+> solo su Cloudflare Pages non ha alcun effetto.
 
-> In alternativa posso integrare Formspree o una Cloudflare Function: dimmelo.
+**Stato attuale**: chiave creata con `centioniproduzioni@gmail.com` (i
+messaggi del form arrivano lì), variabile `PUBLIC_WEB3FORMS_KEY` impostata
+su GitHub, invio verificato end-to-end.
+
+Per cambiare chiave o email di destinazione:
+1. Nuova **Access Key** su **web3forms.com** con l'email desiderata.
+2. GitHub → repository → **Settings → Secrets and variables → Actions →
+   Variables** → aggiorna `PUBLIC_WEB3FORMS_KEY`.
+3. Rilancia il deploy: **Actions → Deploy to Cloudflare Pages → Run
+   workflow** (o un push su `main`).
+4. Verifica su `/contatti` con un invio di prova.
+
+> Finché la variabile manca, il form invita a scrivere via email (nessun
+> errore silenzioso).
+
+---
+
+## 4b) Google Analytics (GA4) 🧑 — opzionale
+
+Il sito è già predisposto: il tag GA4 si attiva da solo se esiste la
+variabile di build `PUBLIC_GA_ID` (senza variabile: zero script in più).
+
+1. Vai su **analytics.google.com** (account Google del cliente) →
+   **Crea proprietà** "Centioni Produzioni" (fuso orario Italia, valuta EUR).
+2. Crea uno **stream Web** per `https://centioniproduzioni.it` e copia il
+   **Measurement ID** (formato `G-XXXXXXXXXX`). Non serve installare alcun
+   tag manualmente.
+3. GitHub → repository → **Settings → Secrets and variables → Actions →
+   Variables → New repository variable**:
+   - nome: `PUBLIC_GA_ID` · valore: il Measurement ID.
+4. Rilancia il deploy (**Actions → Deploy to Cloudflare Pages → Run
+   workflow**), poi verifica in GA4 → **Reports → Realtime** visitando
+   il sito.
+
+> ⚠️ Nota privacy: GA4 usa cookie/identificatori → per la normativa italiana
+> serve un banner di consenso. In alternativa **Cloudflare Web Analytics**
+> (Dashboard → Analytics → Web Analytics) è senza cookie e non richiede
+> banner. Decidere prima di attivare GA4 sul dominio pubblico.
 
 ---
 

@@ -20,4 +20,11 @@ export default defineConfig({
     prefetchAll: true,
     defaultStrategy: 'viewport',
   },
+  vite: {
+    build: {
+      // Nessun asset/script inlined nell'HTML: consente alla CSP (public/_headers)
+      // di usare `script-src 'self'` senza 'unsafe-inline'.
+      assetsInlineLimit: 0,
+    },
+  },
 });

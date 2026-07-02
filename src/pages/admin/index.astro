@@ -305,7 +305,7 @@ export const prerender = true;
           return `<div class="field"><label>${esc(f.label)}</label><div class="cover">` +
             `<span class="prev" id="${id}_prev">${prev}</span>` +
             `<div><input type="hidden" id="${id}" name="${f.name}" value="${esc(val || '')}">` +
-            `<label class="filebtn">Carica immagine<input type="file" accept="image/*" data-target="${id}" hidden></label>` +
+            `<label class="filebtn">Carica immagine<input type="file" accept=".jpg,.jpeg,.png,.webp,.avif,image/jpeg,image/png,image/webp,image/avif" data-target="${id}" hidden></label>` +
             (val ? ` <button type="button" class="rm" data-for="${id}">rimuovi</button>` : '') +
             `</div></div></div>`;
         } else if (f.type === 'number')
@@ -328,20 +328,61 @@ export const prerender = true;
           const file = input.files[0];
           if (!file) return;
           const status = $('#formStatus');
-          status.textContent = 'Carico immagine…'; status.className = 'status';
+          status.textContent = 'Ottimizzo immagine…'; status.className = 'status';
           try {
-            const dataBase64 = await fileToBase64(file);
+            const prepared = await prepareImage(file);
+            status.textContent = 'Carico immagine…';
+            const dataBase64 = await fileToBase64(prepared);
             const res = await api('/upload', {
               method: 'POST', headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ filename: file.name, dataBase64 }),
+              body: JSON.stringify({ filename: prepared.name, dataBase64 }),
             });
             const target = document.getElementById(input.dataset.target);
             target.value = res.path;
             document.getElementById(input.dataset.target + '_prev').innerHTML =
-              `<img src="${URL.createObjectURL(file)}" alt="">`;
-            status.textContent = 'Immagine caricata ✓'; status.className = 'status ok';
+              `<img src="${URL.createObjectURL(prepared)}" alt="">`;
+            status.textContent = `Immagine caricata ✓ (${Math.max(1, Math.round(prepared.size / 1024))} KB)`;
+            status.className = 'status ok';
           } catch (e) { status.textContent = e.message; status.className = 'status err'; }
         });
+      }
+
+      // Compressione automatica delle copertine prima dell'upload: le foto da
+      // telefono (3–8 MB) diventano ~200–400 KB, così repo e build restano leggeri.
+      const IMG_MAX_SIDE = 1920;      // lato massimo: oltre non serve al layout
+      const IMG_SKIP_BYTES = 500 * 1024;   // già leggera → invio l'originale
+      const IMG_MAX_BYTES = 8 * 1024 * 1024; // stesso tetto del server
+
+      async function prepareImage(file) {
+        const okExt = /\.(jpe?g|png|webp|avif)$/i.test(file.name);
+        if (okExt && file.size <= IMG_SKIP_BYTES) return file;
+        try {
+          let bmp;
+          try {
+            bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+          } catch {
+            bmp = await createImageBitmap(file); // browser senza opzioni
+          }
+          const scale = Math.min(1, IMG_MAX_SIDE / Math.max(bmp.width, bmp.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.max(1, Math.round(bmp.width * scale));
+          canvas.height = Math.max(1, Math.round(bmp.height * scale));
+          canvas.getContext('2d').drawImage(bmp, 0, 0, canvas.width, canvas.height);
+          bmp.close();
+          let blob = await new Promise((res) => canvas.toBlob(res, 'image/webp', 0.82));
+          if (!blob || blob.type !== 'image/webp') {
+            blob = await new Promise((res) => canvas.toBlob(res, 'image/jpeg', 0.85));
+          }
+          if (!blob) throw new Error('encode');
+          // se la ricompressione non guadagna nulla, tengo l'originale
+          if (okExt && blob.size >= file.size && file.size <= IMG_MAX_BYTES) return file;
+          const ext = blob.type === 'image/webp' ? 'webp' : 'jpg';
+          const base = (file.name.replace(/\.[^.]+$/, '') || 'immagine');
+          return new File([blob], `${base}.${ext}`, { type: blob.type });
+        } catch {
+          if (okExt && file.size <= IMG_MAX_BYTES) return file; // fallback: originale
+          throw new Error('Immagine non leggibile o troppo grande: usa JPG, PNG, WebP o AVIF fino a 8 MB.');
+        }
       }
 
       function fileToBase64(file) {

@@ -2,9 +2,14 @@
 # HSTS senza includeSubDomains/preload per non interferire con i sottodomini
 # della posta (mail/pop/autoconfig) gestiti da Register.
 #
-# NB: CSP rimosso temporaneamente. Stava bloccando le connessioni del login
-# TinaCloud (content.tina.io / identity.tina.io). Va reintrodotto solo dopo
-# averlo testato sul live, con l'allowlist dei domini Tina + analytics + YouTube.
+# CSP del sito pubblico — origini esterne ammesse:
+#   - api.web3forms.com        → invio del form contatti (fetch + fallback POST)
+#   - www.youtube-nocookie.com → embed video click-to-load (LiteYouTube)
+#   - googletagmanager/google-analytics → GA4, attivo solo con PUBLIC_GA_ID
+# Gli script sono sempre file esterni (vite assetsInlineLimit: 0 in
+# astro.config.mjs), quindi script-src resta 'self' senza 'unsafe-inline'.
+# 'unsafe-inline' per gli stili serve agli <style> scoped che Astro può
+# inlinare e alle animazioni delle View Transitions.
 
 /*
   Strict-Transport-Security: max-age=31536000
@@ -12,6 +17,14 @@
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
   Permissions-Policy: geolocation=(), microphone=(), camera=(), browsing-topics=()
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://www.googletagmanager.com; font-src 'self'; connect-src 'self' https://api.web3forms.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; frame-ancestors 'self'; manifest-src 'self'; upgrade-insecure-requests
+
+# CSP dedicata del pannello redazione (già protetto da Cloudflare Access):
+#   - script inline (la SPA è un unico script is:inline nella pagina)
+#   - miniature copertine da raw.githubusercontent.com, anteprime blob:/data:
+/admin*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://raw.githubusercontent.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
 
 # Cache lunga per gli asset con hash nel nome
 /_astro/*

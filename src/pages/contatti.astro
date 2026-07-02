@@ -75,6 +75,14 @@ const breadcrumb = {
       <p class="form__status" role="status" aria-live="polite"></p>
     </form>
 
+    <div class="form__success" id="form-success" tabindex="-1" hidden>
+      <p class="form__success-title">
+        <span aria-hidden="true">✓</span> Messaggio inviato
+      </p>
+      <p>Grazie! Ti rispondiamo appena possibile a questa email.</p>
+      <button type="button" class="btn btn--ghost" id="form-again">Invia un altro messaggio</button>
+    </div>
+
     <aside class="contact__aside reveal">
       <div class="contact__block">
         <h2>Diretto</h2>
@@ -107,6 +115,14 @@ const breadcrumb = {
     form.dataset.ready = 'true';
     const status = form.querySelector<HTMLElement>('.form__status');
     const btn = form.querySelector<HTMLButtonElement>('.form__submit');
+    const success = document.querySelector<HTMLElement>('#form-success');
+    const again = document.querySelector<HTMLButtonElement>('#form-again');
+    again?.addEventListener('click', () => {
+      if (!success) return;
+      success.hidden = true;
+      form.hidden = false;
+      form.querySelector<HTMLElement>('input[name="name"]')?.focus();
+    });
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (!status || !btn) return;
@@ -128,8 +144,16 @@ const breadcrumb = {
         const data = await res.json().catch(() => ({}));
         if (res.ok && data.success) {
           form.reset();
-          status.textContent = 'Grazie! Messaggio inviato. Ti rispondiamo presto.';
-          status.classList.add('is-ok');
+          status.textContent = '';
+          if (success) {
+            // conferma ben visibile: via il form, dentro il pannello di successo
+            form.hidden = true;
+            success.hidden = false;
+            success.focus();
+          } else {
+            status.textContent = 'Grazie! Messaggio inviato. Ti rispondiamo presto.';
+            status.classList.add('is-ok');
+          }
         } else {
           throw new Error(data.message || 'Errore');
         }
@@ -175,6 +199,10 @@ const breadcrumb = {
   .form {
     display: grid;
     gap: var(--space-2);
+  }
+  /* l'attributo hidden deve vincere sul display: grid */
+  .form[hidden] {
+    display: none;
   }
   .form__row {
     display: grid;
@@ -239,6 +267,27 @@ const breadcrumb = {
   .form__status.is-err {
     color: #a23b2c;
     font-weight: 600;
+  }
+  .form__success {
+    padding: var(--space-4);
+    border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  }
+  .form__success:focus {
+    outline: none;
+  }
+  .form__success-title {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    color: var(--color-accent);
+    margin-bottom: var(--space-1);
+  }
+  .form__success p:not(.form__success-title) {
+    color: var(--color-ink-soft);
+  }
+  .form__success .btn {
+    margin-top: var(--space-3);
   }
 
   .contact__block + .contact__block {
