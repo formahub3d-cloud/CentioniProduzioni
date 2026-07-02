@@ -5,6 +5,7 @@
 # CSP del sito pubblico — origini esterne ammesse:
 #   - api.web3forms.com        → invio del form contatti (fetch + fallback POST)
 #   - www.youtube-nocookie.com → embed video click-to-load (LiteYouTube)
+#   - googletagmanager/google-analytics → GA4, attivo solo con PUBLIC_GA_ID
 # Gli script sono sempre file esterni (vite assetsInlineLimit: 0 in
 # astro.config.mjs), quindi script-src resta 'self' senza 'unsafe-inline'.
 # 'unsafe-inline' per gli stili serve agli <style> scoped che Astro può
@@ -16,7 +17,7 @@
   Referrer-Policy: strict-origin-when-cross-origin
   X-Frame-Options: SAMEORIGIN
   Permissions-Policy: geolocation=(), microphone=(), camera=(), browsing-topics=()
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.web3forms.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; frame-ancestors 'self'; manifest-src 'self'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://*.google-analytics.com https://www.googletagmanager.com; font-src 'self'; connect-src 'self' https://api.web3forms.com https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com; frame-ancestors 'self'; manifest-src 'self'; upgrade-insecure-requests
 
 # CSP dedicata del pannello redazione (già protetto da Cloudflare Access):
 #   - script inline (la SPA è un unico script is:inline nella pagina)

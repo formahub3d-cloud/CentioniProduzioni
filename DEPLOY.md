@@ -87,14 +87,44 @@ Contenuti:
 
 ## 4) Form contatti — Web3Forms 🧑
 
-Il form invia le email tramite **Web3Forms** (gratis, nessun backend):
+Il form invia le email tramite **Web3Forms** (gratis, nessun backend). La
+chiave NON va nel codice: è una **variabile di build** su Cloudflare Pages.
 
-1. Vai su **web3forms.com**, inserisci la mail su cui vuoi ricevere i messaggi
-   e ottieni la **Access Key**.
-2. Incolla la chiave in `src/data/site.ts` → `CONTACT.accessKey`.
-3. Commit + push. Il form è subito funzionante.
+1. Vai su **web3forms.com**, inserisci `info@centioniproduzioni.it`
+   e ottieni la **Access Key** (arriva anche via email).
+2. Cloudflare Dashboard → **Workers & Pages** → progetto del sito →
+   **Settings → Environment variables → Production → Add variable**:
+   - nome: `PUBLIC_WEB3FORMS_KEY` · valore: la Access Key.
+3. **Deployments → ⋯ → Retry deployment** sull'ultimo deploy: la variabile
+   entra nel sito solo con una nuova build.
+4. Verifica su `/contatti`: il form non deve più mostrare l'avviso
+   "modulo non ancora attivo" e l'invio di prova deve arrivare via email.
 
-> In alternativa posso integrare Formspree o una Cloudflare Function: dimmelo.
+> Finché la variabile manca, il form invita a scrivere via email (nessun
+> errore silenzioso).
+
+---
+
+## 4b) Google Analytics (GA4) 🧑 — opzionale
+
+Il sito è già predisposto: il tag GA4 si attiva da solo se esiste la
+variabile di build `PUBLIC_GA_ID` (senza variabile: zero script in più).
+
+1. Vai su **analytics.google.com** (account Google del cliente) →
+   **Crea proprietà** "Centioni Produzioni" (fuso orario Italia, valuta EUR).
+2. Crea uno **stream Web** per `https://centioniproduzioni.it` e copia il
+   **Measurement ID** (formato `G-XXXXXXXXXX`). Non serve installare alcun
+   tag manualmente.
+3. Cloudflare Dashboard → **Workers & Pages** → progetto del sito →
+   **Settings → Environment variables → Production → Add variable**:
+   - nome: `PUBLIC_GA_ID` · valore: il Measurement ID.
+4. **Deployments → ⋯ → Retry deployment**, poi verifica in GA4 →
+   **Reports → Realtime** visitando il sito.
+
+> ⚠️ Nota privacy: GA4 usa cookie/identificatori → per la normativa italiana
+> serve un banner di consenso. In alternativa **Cloudflare Web Analytics**
+> (Dashboard → Analytics → Web Analytics) è senza cookie e non richiede
+> banner. Decidere prima di attivare GA4 sul dominio pubblico.
 
 ---
 
