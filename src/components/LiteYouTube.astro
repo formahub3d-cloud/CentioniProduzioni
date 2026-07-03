@@ -43,9 +43,12 @@ const { id, title, poster } = Astro.props;
         btn?.addEventListener(
           'click',
           () => {
-            const id = el.dataset.id;
+            const id = el.dataset.id ?? '';
             const iframe = document.createElement('iframe');
-            iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
+            // ID che iniziano per "PL" = playlist; altrimenti singolo video.
+            iframe.src = id.startsWith('PL')
+              ? `https://www.youtube-nocookie.com/embed/videoseries?list=${id}&autoplay=1&rel=0`
+              : `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
             iframe.title = 'YouTube';
             iframe.loading = 'lazy';
             iframe.allow =

@@ -21,9 +21,10 @@ const breadcrumb = {
   ],
 };
 
-// VideoObject per i progetti in corso con un video YouTube.
+// VideoObject per i progetti in corso con un singolo video YouTube
+// (le playlist, ID "PL…", non sono un VideoObject valido).
 const videos = inCorso
-  .filter((p) => p.data.youtube)
+  .filter((p) => p.data.youtube && !p.data.youtube.startsWith('PL'))
   .map((p) => ({
     '@context': 'https://schema.org',
     '@type': 'VideoObject',
