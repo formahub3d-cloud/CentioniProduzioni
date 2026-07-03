@@ -308,7 +308,9 @@ export const prerender = true;
             `<label class="filebtn">Carica immagine<input type="file" accept=".jpg,.jpeg,.png,.webp,.avif,image/jpeg,image/png,image/webp,image/avif" data-target="${id}" hidden></label>` +
             (val ? ` <button type="button" class="rm" data-for="${id}">rimuovi</button>` : '') +
             `</div></div></div>`;
-        } else if (f.type === 'number')
+        } else if (f.type === 'date')
+          inner = `<input type="date" id="${id}" name="${f.name}" value="${esc(val ?? '')}" ${f.required ? 'required' : ''}>`;
+        else if (f.type === 'number')
           inner = `<input type="number" id="${id}" name="${f.name}" value="${esc(val ?? '')}">`;
         else
           inner = `<input type="text" id="${id}" name="${f.name}" value="${esc(val ?? '')}" ${f.required ? 'required' : ''}>`;
