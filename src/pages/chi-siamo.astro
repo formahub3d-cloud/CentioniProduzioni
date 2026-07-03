@@ -186,7 +186,7 @@ const breadcrumb = {
     .about {
       grid-template-columns: 2fr 3fr;
       gap: var(--space-6);
-      align-items: start;
+      align-items: stretch;
     }
   }
 
@@ -201,6 +201,14 @@ const breadcrumb = {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  /* Desktop: la foto riempie l'intera altezza della colonna di testo —
+     niente vuoto sotto, composizione a due colonne piena. */
+  @media (min-width: 52rem) {
+    .about__portrait {
+      aspect-ratio: auto;
+      height: 100%;
+    }
   }
 
   .about__body {
