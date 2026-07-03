@@ -279,27 +279,20 @@ a:hover {
   transition-delay: calc(var(--i, 0) * 90ms + 180ms);
 }
 
-/* --- Media reveal: clip-wipe upward + slow scale settle --- */
-.media-reveal {
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 1s var(--ease);
-  transition-delay: calc(var(--i, 0) * 80ms);
-}
-
-.media-reveal :global(img),
+/* --- Media reveal: clip-wipe upward + slow scale settle ---
+   NB: il clip sta sull'IMG interna, non sull'elemento osservato: un elemento
+   con clip-path inset(…100%…) per Chrome non interseca mai il viewport,
+   quindi l'IntersectionObserver non lo rivelerebbe mai (deadlock). */
 .media-reveal img {
+  clip-path: inset(0 0 100% 0);
   transform: scale(1.18);
-  transition: transform 1.2s var(--ease);
+  transition: clip-path 1s var(--ease), transform 1.2s var(--ease);
   transition-delay: calc(var(--i, 0) * 80ms);
-}
-
-.is-visible .media-reveal,
-.media-reveal.is-visible {
-  clip-path: inset(0 0 0% 0);
 }
 
 .is-visible .media-reveal img,
 .media-reveal.is-visible img {
+  clip-path: inset(0 0 0% 0);
   transform: scale(1);
 }
 
@@ -388,10 +381,8 @@ a:hover {
   .reveal-lines .line > span {
     transform: none;
   }
-  .media-reveal {
-    clip-path: none;
-  }
   .media-reveal img {
+    clip-path: none;
     transform: none;
   }
   .marquee__track {
