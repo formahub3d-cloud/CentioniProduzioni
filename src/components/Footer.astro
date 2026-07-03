@@ -13,7 +13,7 @@ const year = new Date().getFullYear();
       </p>
       <p class="site-footer__tag">{SITE.description}</p>
       <p class="site-footer__mail">
-        <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
+        <!--email_off--><a href={`mailto:${SITE.email}`}>{SITE.email}</a><!--/email_off-->
       </p>
     </div>
 
@@ -45,6 +45,7 @@ const year = new Date().getFullYear();
   <div class="wrap site-footer__copy">
     <span>© {year} {SITE.name}</span>
     <a href="/privacy">Privacy</a>
+    <a href="/termini">Termini e Condizioni</a>
   </div>
 </footer>
 

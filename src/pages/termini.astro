@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../data/site.ts';
+
+const updated = '3 luglio 2026';
+---
+
+<BaseLayout
+  title="Termini e Condizioni"
+  description="Termini e condizioni d'uso del sito di Centioni Produzioni."
+>
+  <section class="wrap page-head">
+    <p class="eyebrow reveal">Termini e Condizioni</p>
+    <h1 class="reveal reveal-lines"><span class="line"><span>Termini e condizioni d'uso</span></span></h1>
+    <p class="page-head__lead reveal" style="--i:1">Ultimo aggiornamento: {updated}</p>
+  </section>
+
+  <section class="wrap prose flow legal">
+    <h2>Oggetto</h2>
+    <p>
+      Questo sito è il canale ufficiale di <strong>{SITE.name}</strong>:
+      presenta le produzioni video, pubblica news e aggiornamenti e offre un
+      modulo di contatto. Navigando il sito accetti i presenti termini d'uso.
+    </p>
+
+    <h2>Contenuti e proprietà intellettuale</h2>
+    <p>
+      Testi, fotografie, video, loghi e grafiche presenti sul sito sono di
+      proprietà di {SITE.name} o utilizzati con autorizzazione dei rispettivi
+      titolari. Non è consentita la riproduzione, la distribuzione o la
+      modifica dei contenuti senza consenso scritto, fatta salva la
+      condivisione dei link alle pagine del sito.
+    </p>
+
+    <h2>Uso consentito</h2>
+    <p>
+      Il sito è destinato alla consultazione personale e informativa. Non è
+      consentito farne un uso illecito, lesivo di diritti altrui o tale da
+      comprometterne il funzionamento.
+    </p>
+
+    <h2>Contenuti e servizi di terzi</h2>
+    <p>
+      Alcune pagine possono incorporare video di <strong>YouTube</strong>
+      (caricati solo dopo un tuo clic) e contenere link ai nostri canali
+      social. Questi servizi sono gestiti dai rispettivi fornitori, ai cui
+      termini e informative si rimanda.
+    </p>
+
+    <h2>Limitazione di responsabilità</h2>
+    <p>
+      I contenuti del sito hanno finalità informative e possono essere
+      aggiornati, modificati o rimossi in qualsiasi momento senza preavviso.
+      {SITE.name} non garantisce l'assenza di imprecisioni e non risponde di
+      eventuali danni derivanti dall'uso del sito o dei collegamenti esterni.
+    </p>
+
+    <h2>Modifiche ai termini</h2>
+    <p>
+      I presenti termini possono essere aggiornati; la versione pubblicata su
+      questa pagina, con la relativa data, è quella vigente.
+    </p>
+
+    <h2>Legge applicabile</h2>
+    <p>
+      I presenti termini sono regolati dalla legge italiana.
+    </p>
+
+    <h2>Contatti</h2>
+    <p>
+      Per qualsiasi domanda su questi termini puoi scrivere a
+      <!--email_off--><a href={`mailto:${SITE.email}`}>{SITE.email}</a><!--/email_off-->.
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .page-head {
+    padding-block: clamp(2.5rem, 6vw, 5rem) var(--space-2);
+  }
+  .page-head h1 {
+    font-size: var(--step-3);
+    margin-top: var(--space-1);
+  }
+  .page-head__lead {
+    margin-top: var(--space-1);
+    color: var(--color-muted);
+    font-size: var(--step--1);
+  }
+  .legal {
+    padding-bottom: var(--space-6);
+  }
+</style>

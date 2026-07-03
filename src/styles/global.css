@@ -216,6 +216,7 @@ a:hover {
   display: inline-flex;
   align-items: center;
   gap: 0.4em;
+  white-space: nowrap;
   font-family: var(--font-sans);
   font-size: var(--step--1);
   font-weight: 500;
@@ -255,11 +256,14 @@ a:hover {
 .reveal-lines .line {
   display: block;
   overflow: hidden;
+  /* respiro per i discendenti (g, p, q): senza, la maschera li taglia */
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
 }
 
 .reveal-lines .line > span {
   display: block;
-  transform: translateY(110%);
+  transform: translateY(120%);
   transition: transform 0.9s var(--ease);
   transition-delay: calc(var(--i, 0) * 90ms);
 }

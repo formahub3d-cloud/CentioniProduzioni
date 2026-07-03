@@ -21,7 +21,7 @@ const hasGA = Boolean(import.meta.env.PUBLIC_GA_ID);
     <p>
       Il titolare del trattamento è <strong>{SITE.name}</strong>. Per qualsiasi
       richiesta relativa ai tuoi dati puoi scrivere a
-      <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+      <!--email_off--><a href={`mailto:${SITE.email}`}>{SITE.email}</a><!--/email_off-->.
     </p>
 
     <h2>Modulo di contatto</h2>
@@ -84,7 +84,7 @@ const hasGA = Boolean(import.meta.env.PUBLIC_GA_ID);
     <p>
       Puoi richiedere in qualsiasi momento l'accesso, la rettifica o la
       cancellazione dei tuoi dati scrivendo a
-      <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+      <!--email_off--><a href={`mailto:${SITE.email}`}>{SITE.email}</a><!--/email_off-->.
     </p>
   </section>
 </BaseLayout>
