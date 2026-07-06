@@ -1,7 +1,7 @@
 ---
 title: "AL VIA 'CENTIONI PRODUZIONI', NUOVA FACTORY FIRMATA DALL'ATTORE"
 date: "2026-07-06"
-cover: "/src/assets/media/1000145597.jpg"
+cover: "/src/assets/media/4132642-0912-rudy.jpg"
 excerpt: "In sinergia con Gaetano Campolo, l'attore annuncia sul web il debutto sul campo come conduttore e autore di nuovi format estivi e invernali."
 draft: false
 ---
