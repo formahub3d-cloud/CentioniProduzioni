@@ -1,5 +1,5 @@
 ---
-title: "CENTIONI PRODUZIONI, APPUNTAMENTO ALLE 21: SU FACEBOOK UNA PRIMA SERATA D'ECCEZION"
+title: "CENTIONI PRODUZIONI, APPUNTAMENTO ALLE 21: SU FACEBOOK UNA PRIMA SERATA D'ECCEZIONE"
 date: "2026-07-08"
 cover: "/src/assets/media/immagine-2026-07-08-173821.webp"
 excerpt: "Il brand lancia una super sorpresa sul web per tutti i fan."
