@@ -22,6 +22,36 @@ function gh(env, path, init = {}) {
   });
 }
 
+/**
+ * Traduce un errore della GitHub API in un messaggio comprensibile per la
+ * redazione: chi scrive gli articoli non deve interpretare codici HTTP, ma
+ * capire se può riprovare o se serve l'intervento dell'amministratore.
+ */
+function ghFail(op, status) {
+  let message;
+  if (status === 401)
+    message =
+      `Il collegamento a GitHub non è più valido (credenziale scaduta o revocata): ` +
+      `il pannello non può leggere né salvare i contenuti. Contatta l'amministratore del sito.`;
+  else if (status === 403)
+    message =
+      `GitHub ha negato l'accesso: la credenziale del CMS non ha i permessi necessari ` +
+      `sul repository. Contatta l'amministratore del sito.`;
+  else if (status === 409)
+    message = `Il contenuto è stato modificato nel frattempo: ricarica la pagina e riprova.`;
+  else if (status >= 500)
+    message = `GitHub non risponde in questo momento. Riprova tra qualche minuto.`;
+  else
+    message =
+      `Errore di comunicazione con GitHub (${status}) durante ${op}. ` +
+      `Se il problema persiste, contatta l'amministratore del sito.`;
+
+  // 401/403 arrivano da GitHub, non dalla sessione di chi sta scrivendo:
+  // rispondiamo 502 per non far credere al pannello che il login sia scaduto.
+  const httpStatus = status === 401 || status === 403 || status >= 500 ? 502 : status;
+  return Object.assign(new Error(message), { status: httpStatus, ghStatus: status, op });
+}
+
 /** URL raw (pubblico) di un file del repo, per l'anteprima nel pannello. */
 export function rawUrl(env, filePath) {
   if (!filePath) return null;
@@ -47,7 +77,7 @@ export async function listDir(env, dir) {
   const { repo, branch } = cfg(env);
   const r = await gh(env, `/repos/${repo}/contents/${dir}?ref=${branch}`);
   if (r.status === 404) return [];
-  if (!r.ok) throw new Error(`GitHub list ${r.status}`);
+  if (!r.ok) throw ghFail(`la lettura dell'elenco`, r.status);
   return r.json();
 }
 
@@ -55,7 +85,7 @@ export async function getFile(env, path) {
   const { repo, branch } = cfg(env);
   const r = await gh(env, `/repos/${repo}/contents/${path}?ref=${branch}`);
   if (r.status === 404) return null;
-  if (!r.ok) throw new Error(`GitHub get ${r.status}`);
+  if (!r.ok) throw ghFail(`la lettura del file`, r.status);
   return r.json(); // { content, sha, ... }
 }
 
@@ -67,7 +97,11 @@ export async function putFile(env, path, contentBase64, message, sha) {
     method: 'PUT',
     body: JSON.stringify(body),
   });
-  if (!r.ok) throw new Error(`GitHub put ${r.status}: ${await r.text()}`);
+  if (!r.ok) {
+    // dettaglio tecnico solo nei log di Cloudflare, non nel pannello
+    console.error('GitHub put', r.status, await r.text());
+    throw ghFail(`il salvataggio`, r.status);
+  }
   return r.json();
 }
 
@@ -77,6 +111,6 @@ export async function deleteFile(env, path, message, sha) {
     method: 'DELETE',
     body: JSON.stringify({ message, branch, sha }),
   });
-  if (!r.ok) throw new Error(`GitHub delete ${r.status}`);
+  if (!r.ok) throw ghFail(`l'eliminazione`, r.status);
   return r.json();
 }
