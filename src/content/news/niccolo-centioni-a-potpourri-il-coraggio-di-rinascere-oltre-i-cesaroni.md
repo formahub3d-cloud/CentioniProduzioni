@@ -12,7 +12,7 @@ L'infanzia davanti alle telecamere e l'ombra del successo
 
 Inghiottito dalla televisione a soli 6 anni per realizzare un sogno che inizialmente era della madre, Niccolò ha vissuto un'infanzia fuori dal comune. Dai primi sorrisi con Paolo Bonolis a Chi ha incastrato Peter Pan? fino all'abbraccio con Raffaella Carrà, il suo destino sembrava già scritto. Poi, nel 2006, la svolta: l'ingresso nel cast de I Cesaroni.
 
-Per otto lunghi anni, il pubblico italiano lo ha visto crescere, ridere e innamorarsi nei panni di Rudy. Ma cosa succede quando quel "giocattolo perfetto" all'improvviso si rompe? Centioni ha ricordato con forte carica emotiva lo smarrimento provato quando i riflettori si sono spenti: la sensazione di essere rimasto fuori da una bolla protettiva e la fatica di dover dimostrare al mondo intero di non essere soltanto "il ragazzino della TV", ma un uomo con i propri sogni, le proprie fragilità e una propria profonda identità.
+Per 7 anni, il pubblico italiano lo ha visto crescere, ridere e innamorarsi nei panni di Rudi. Ma cosa succede quando quel "giocattolo perfetto" all'improvviso si rompe? Centioni ha ricordato con forte carica emotiva lo smarrimento provato quando i riflettori si sono spenti: la sensazione di essere rimasto fuori da una bolla protettiva e la fatica di dover dimostrare al mondo intero di non essere soltanto "il ragazzino della TV", ma un uomo con i propri sogni, le proprie fragilità e una propria profonda identità.
 
 Tra ferite e riscatto: la forza di rialzarsi
 
