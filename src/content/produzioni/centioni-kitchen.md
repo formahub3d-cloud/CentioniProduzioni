@@ -1,10 +1,10 @@
 ---
-title: "Centioni's Kitchen"
-status: "in-corso"
-cover: "/src/assets/media/centioni-kitchen.jpg"
+title: "Home Restaurant Hotel Experience "
+status: "in-uscita"
+cover: "/src/assets/media/1000193061.webp"
 youtube: "PLd_H2BEn90XI"
-video: "https://youtube.com/playlist?list=PLd_H2BEn90XI&si=gh1-AAxSWGYn0FvP"
-description: "Il format culinario di Niccolò: ricette, ospiti e il dietro le quinte ai fornelli, tra gusto e leggerezza."
+video: "https://www.instagram.com/centioniproduzioni.it?dlrf=MXB6cGM5c3NuaWNoNw=="
+description: "Niccolò in giro per l'Italia alla scoperta degli Homers su www.homerestauranthotel.com. Diffusione su Digitale Terrestre Nazionale, YouTube e Social di Home Restaurant Hotel, Niccolò Centioni, Centioni Produzioni e ospiti in collaborazione."
 order: 1
 draft: false
 ---
