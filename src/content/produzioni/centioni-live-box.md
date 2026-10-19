@@ -1,5 +1,5 @@
 ---
-title: "Centioni Box Live"
+title: "X FOOD"
 status: "in-uscita"
 cover: "/src/assets/media/1000192601.jpg"
 video: "https://www.instagram.com/centioniproduzioni.it?dlrf=MXB6cGM5c3NuaWNoNw=="
