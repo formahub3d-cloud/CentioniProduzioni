@@ -1,9 +1,10 @@
 ---
-title: "Paperoscopo"
+title: "In 5 Minuti"
 status: "in-uscita"
-cover: "/src/assets/media/1000161607.jpg"
-releaseLabel: "In Uscita il 12 Settembre 2026"
-description: "L'oroscopo in paperinese a cura di Niccolò Centioni con rubrica mensile a partire dal 12 Settembre. Lo trovi tra gli abbonati Facebook di Niccolò Centioni e sul Canale 68 del digitale terrestre dal 12 Settembre ore 14"
+cover: "/src/assets/media/1000195046.jpg"
+video: "https://www.instagram.com/in5minuti.prod?rpxt=MWFrM3E1bm1lbHJmbw=="
+releaseLabel: "In Uscita il 13 Novembre "
+description: "Notizie, Sport, Spettacolo, Approfondimenti \"In 5 Minuti\""
 order: 4
 draft: false
 ---
